@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/style.css">
+    <script src="./script/Sortable.js" defer></script>
+    <script src="./script/create-elements.js" defer></script>
+    <script src="./script/main.js" defer></script>
+    <script src="./script/allQuestions.js" defer></script>
+    <title>Поиск неисправностей</title>
+</head>
+<body>
+
+    <header>
+        <div class="header_wrap">
+            <div class="header-title">
+                <h1>Поиск неисправностей
+
+                </h1>
+            </div>
+            <div class="header_links">
+                <a href="../../index.html">На главную</a>
+                
+            </div>
+        </div>
+    </header>
+
+    <div class="main_wrap">
+        <div class="question_wrap">
+            <div class="text_wrap">
+                <p class="welcome_text">Перед вами задания разных уровней сложности. Кликните на карточку, чтобы перейти к заданию. Выберите вариант (варианты) ответа и нажмите кнопку «Ответить»</p>
+            </div>
+            <div class="buttons_box">
+                <div class="questions_btns">
+                    <div class="question id0">
+                        <button>1</button>
+                    </div>
+                    <div class="question id1">
+                        <button>2</button>
+                    </div>
+                    <div class="question id2">
+                        <button>3</button>
+                    </div>
+                    <div class="question id3">
+                        <button>4</button>
+                    </div>
+                    <div class="question id4">
+                        <button>5</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons_box">
+                <div class="questions_btns">
+                    <div class="question id5">
+                        <button>6</button>
+                    </div>
+                    <div class="question id6">
+                        <button>7</button>
+                    </div>
+                    <div class="question id7">
+                        <button>8</button>
+                    </div>
+                    <div class="question id8">
+                        <button>9</button>
+                    </div>
+                    <div class="question id9">
+                        <button>10</button>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="buttons_box">
+                <div class="questions_btns">
+                    <div class="question id10">
+                        <button>11</button>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="score_wrap" >
+                <div class="count_point" style="display: none;">
+                    <p>Количество очков</p>
+                    <p class="points" id="score">0</p>
+                </div>
+                <div class="count_try" style="display: none;">
+                    <p>Количество попыток</p>
+                    <p class="tryes" id="lives">10</p>
+                </div>
+                <input type="button" id="button_results" class="button_results btn_closed" value="Смотреть результаты">
+                    
+                </input>
+            </div>
+        </div>
+        <div class="logo_wrap">
+            <img src="content/logo_of_profi.png" alt="logo">
+        </div>
+    </div>
+
+    <div id="popup_window" class="popup closed"> 
+
+        <div class="popup_main" id="popup_main">
+            
+        </div>
+
+    </div>
+</body>
+</html>
