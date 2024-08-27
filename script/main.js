@@ -45,9 +45,9 @@ document.addEventListener('DOMContentLoaded', function(){
         question.addEventListener('click', handleQuestionClick);
     }
 
-    imageModalClose = document.getElementsByClassName('imageModalClose')[0];
+    imageModalClose = document.getElementsByClassName('modalLoupe')[0];
     imageModalClose.onclick = function() { 
-        imageModal = document.getElementById('imageModal');
+        imageModal = document.getElementById('imageLoupe');
         imageModal.style.display = "none";
     }
 

@@ -809,7 +809,7 @@ input[type='checkbox']:checked {
 }
 
 /* Стили для модального окна */
-.modal {
+.modalLoupe {
     display: none; /* Окно скрыто по умолчанию */
     position: fixed; /* Фиксированное положение */
     z-index: 1000; /* Помещаем окно поверх остальных элементов */
@@ -823,7 +823,7 @@ input[type='checkbox']:checked {
 }
 
 /* Стили для изображения внутри модального окна */
-.modal-content {
+.modalLoupe-content {
     max-width: 90%;
     max-height: 90%;
     position: relative;

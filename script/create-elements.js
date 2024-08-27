@@ -144,7 +144,7 @@ function createImgLoupe(addClasses = "") {
 
 function createFileWindow(imgEl) {
     // console.log(imgEl)
-    let modal = document.getElementById("imageModal");
+    let modal = document.getElementById("imageLoupe");
     let modalImg = document.getElementById("modalImage");
 
     if (imgEl) {
