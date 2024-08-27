@@ -134,7 +134,26 @@ function createBottomPopUp(question){
 function createImgLoupe(addClasses = "") {
     let el = document.createElement("div")
     el.setAttribute("class", `resize_btn ${addClasses}`)
+    el.addEventListener('click', () => {
+            const parentDiv = el.parentElement;
+            const imgElement = parentDiv.querySelector('img');
+            createFileWindow(imgElement)
+        });
     return el
+}
+
+function createFileWindow(imgEl) {
+    // console.log(imgEl)
+    let modal = document.getElementById("imageModal");
+    let modalImg = document.getElementById("modalImage");
+
+    if (imgEl) {
+            // Отображаем модальное окно и изображение
+            modal.style.display = "flex";
+            modalImg.src = imgEl.src;
+        }
+
+    console.log(imgEl);
 }
 
 function deletePopUpMain(){

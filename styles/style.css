@@ -210,25 +210,6 @@ header h1 {
     background-color: rgb(255, 114, 118) !important;
 }
 
-.question_type_1_answers input{
-    width: 40px !important;
-    height: 30px !important;
-    box-sizing: border-box !important;
-    appearance: none !important;
-    background: #ffffff00 !important;
-    outline: 0.15vw solid rgb(255 89 93) !important;
-    border: 0.4vw solid white !important;
-    border-radius: 1px !important;
-    margin-left: 3vh !important;
-    pointer-events: none !important;
-    -webkit-border-radius: 2rem !important;
-}
-
-.question_type_1_answers input:checked{
-    accent-color: red !important;
-    background-color: rgb(255, 114, 118) !important;
-}
-
 @media (width <= 1280px) {
     header h1 {
         font-size: 30px !important;

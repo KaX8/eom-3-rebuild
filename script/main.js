@@ -44,6 +44,13 @@ document.addEventListener('DOMContentLoaded', function(){
     for (question of questionsBtn){
         question.addEventListener('click', handleQuestionClick);
     }
+
+    imageModalClose = document.getElementsByClassName('imageModalClose')[0];
+    imageModalClose.onclick = function() { 
+        imageModal = document.getElementById('imageModal');
+        imageModal.style.display = "none";
+    }
+
     // DEBUGGING
     
     
