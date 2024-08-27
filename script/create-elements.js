@@ -2,6 +2,45 @@ let imgPath;
 let device = "pc";
 if (/iPad/i.test(navigator.userAgent)) device = "iPad";
 
+function createButtonsBox(boxes_counter, items_counter){
+    items = []
+    current_box_id = 0
+    
+    for (var i = 0; i < boxes_counter; i++) {
+
+        let buttons_box = document.createElement("div");
+        buttons_box.setAttribute("class", "buttons_box");
+
+        let questions_btns = document.createElement("div");
+        questions_btns.setAttribute("class", "questions_btns");
+
+        for (var j = 0; j < 5; j++) {
+            console.log(boxes_counter)
+            if(current_box_id < items_counter){
+                questions_btns.appendChild(createQuestionButton(current_box_id));
+                current_box_id++;
+            }
+        }
+
+        buttons_box.appendChild(questions_btns)
+        items.push(buttons_box)
+    }
+
+    return items
+}
+
+function createQuestionButton(id){
+    let question = document.createElement("div")
+    question.setAttribute("class", `question id${id}`)
+    let btn = document.createElement("button")
+    let btn_text = document.createTextNode(id+1)
+
+    btn.appendChild(btn_text)
+    question.appendChild(btn)
+
+    return question
+}
+
 function createPopUpMain(question){
     if (question.image) imgPath = `content/quiz-images/type${question.type}`; 
 
@@ -92,6 +131,12 @@ function createBottomPopUp(question){
     return el;
 }
 
+function createImgLoupe(addClasses = "") {
+    let el = document.createElement("div")
+    el.setAttribute("class", `resize_btn ${addClasses}`)
+    return el
+}
+
 function deletePopUpMain(){
     if(document.getElementById("popup_main") != null)
         document.getElementById("popup_main").remove();
@@ -171,6 +216,8 @@ function createImgDiv_Type0(question){
     let img = document.createElement("img");
     img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.png`);
     el.appendChild(img);
+
+    el.appendChild(createImgLoupe())
 
     return el;
 }
@@ -385,6 +432,7 @@ function createAnswer_Type3(question, i){
     elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}/${[i]}.png`);
     elChBChB.setAttribute("alt", "");
     elChB.appendChild(elChBChB);
+    elChB.appendChild(createImgLoupe("resize_btn_type_3"))
     el.appendChild(elChB);
     let elChD = document.createElement("div");
     elChD.setAttribute("class", "question_type_3_answer_drop_zone");
@@ -544,6 +592,7 @@ function createDropDownImage_Type5(question){
     elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.png`);
     elChBChB.setAttribute("alt", "");
     elChB.appendChild(elChBChB);
+    elChB.appendChild(createImgLoupe("resize_btn_type_5"))
     if (question.image != null) el.appendChild(elChB);
 
     el.appendChild(createAnswers_Type5(question));

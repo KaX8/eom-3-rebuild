@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', function(){
     // Сообщение о загрузке скрипта
     console.log('Script is loaded');
 
+    // Генерируем объекты кнопок, для вопросов
+    // Количество кнопок определяется количеством вопросов в allQuestions.js
+    generateQuestionButtons()
+
     // Каждой кнопке присваиваем обработчик события handleQuestionClick, 
     // который будет открывать соответствующее модальное окно
     questionsBtn = document.getElementsByClassName('question');
@@ -45,6 +49,17 @@ document.addEventListener('DOMContentLoaded', function(){
     
     
 });
+
+function generateQuestionButtons() {
+    boxes_counter = Math.ceil(allQuestions.length/5)
+    target = document.getElementsByClassName("question_wrap")[0]
+    score_wrap = document.getElementsByClassName("score_wrap")[0]
+    
+    boxex = createButtonsBox(boxes_counter, allQuestions.length)
+    for (i in boxex) {
+        target.insertBefore(boxex[i], score_wrap)
+    }
+}
 
 // Обработчик события - клик на кнопку вопроса на главной странице
 function handleQuestionClick(e){
