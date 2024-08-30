@@ -182,7 +182,7 @@ body{
     justify-content: start; 
 }
 
-.question_type_0_img{
+.question_type_0_img, .question_type_0_vid{
     display: flex;
     justify-content: center;
     align-self: center;
@@ -195,6 +195,15 @@ body{
     margin-right: 1.5vw;
     margin-left: 1.5vw;
     width: 50%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.question_type_0_vid video{
+    border-radius: 1vh;
+    margin-right: 1.5vw;
+    margin-left: 1.5vw;
+    width: 80%;
     height: 100%;
     object-fit: cover;
 }
@@ -603,10 +612,29 @@ input[type='checkbox']:checked {
     height: 100%;
 }
 
+.question_type_5_video{
+    position: relative;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    width: 40%;
+    height: 100%;
+}
+
 .question_type_5_image img{
     width: 90%;
     height: 90%;
     object-fit: contain;
+}
+
+.question_type_5_video video{
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+}
+
+.resize_btn_type_5_video{
+    top: 20% !important;
 }
 
 .question_type_5_answers{
@@ -823,7 +851,17 @@ input[type='checkbox']:checked {
 }
 
 /* Стили для изображения внутри модального окна */
-.modalLoupe-content {
+.modalLoupe-content-img {
+    display: none;
+    max-width: 90%;
+    max-height: 90%;
+    position: relative;
+    animation-name: zoom;
+    animation-duration: 0.4s;
+}
+
+.modalLoupe-content-vid{
+    display: none;
     max-width: 90%;
     max-height: 90%;
     position: relative;

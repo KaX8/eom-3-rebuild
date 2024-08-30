@@ -45,11 +45,8 @@ document.addEventListener('DOMContentLoaded', function(){
         question.addEventListener('click', handleQuestionClick);
     }
 
-    imageModalClose = document.getElementsByClassName('modalLoupe')[0];
-    imageModalClose.onclick = function() { 
-        imageModal = document.getElementById('imageLoupe');
-        imageModal.style.display = "none";
-    }
+    imageModalClose = document.getElementsByClassName('imageLopueClose')[0];
+    imageModalClose.onclick = fileModalClose;
 
     // DEBUGGING
     
@@ -433,6 +430,18 @@ function setTestCompleted(){
     btn_res.addEventListener('click', function (e) {
         popUpQuestionOpen(true);
     });
+}
+
+
+function fileModalClose() {
+    imageLoupe = document.getElementById('imageLoupe');
+    modalImage = document.getElementById('modalImage');
+    modalVideo = document.getElementById('modalVideo');
+
+    imageLoupe.style.display = "none";
+    modalImage.style.display = "none";
+    modalVideo.style.display = "none";
+    modalVideo.pause()
 }
 
 

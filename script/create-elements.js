@@ -42,7 +42,7 @@ function createQuestionButton(id){
 }
 
 function createPopUpMain(question){
-    if (question.image) imgPath = `content/quiz-images/type${question.type}`; 
+    if (question.image || question.video) imgPath = `content/quiz-images/type${question.type}`; 
 
     let el = document.createElement("div");
     el.setAttribute("class", "popup_main");
@@ -131,29 +131,55 @@ function createBottomPopUp(question){
     return el;
 }
 
-function createImgLoupe(addClasses = "") {
-    let el = document.createElement("div")
-    el.setAttribute("class", `resize_btn ${addClasses}`)
+function createLoupe(addClasses = "") {
+    // Создаем элемент div с классом resize_btn и любыми дополнительными классами
+    const el = document.createElement("div");
+    el.setAttribute("class", `resize_btn ${addClasses}`);
+
+    // Обработчик клика
     el.addEventListener('click', () => {
-            const parentDiv = el.parentElement;
-            const imgElement = parentDiv.querySelector('img');
-            createFileWindow(imgElement)
-        });
-    return el
+        const parentDiv = el.parentElement;
+
+        // Определяем целевой элемент (изображение или видео)
+        const targetEl = findMediaElement(parentDiv);
+        
+        if (targetEl) {
+            const isImage = targetEl.tagName.toLowerCase() === 'img';
+            createFileWindow(targetEl, isImage);
+        }
+    });
+
+    return el;
 }
 
-function createFileWindow(imgEl) {
-    // console.log(imgEl)
-    let modal = document.getElementById("imageLoupe");
-    let modalImg = document.getElementById("modalImage");
+// Функция для поиска изображения или видео в родительском элементе
+function findMediaElement(parent) {
+    const questionData = allQuestions[currentQuestionId];
+    
+    if (questionData.image) {
+        return parent.querySelector('img');
+    } else if (questionData.video) {
+        return parent.querySelector('video');
+    }
 
-    if (imgEl) {
-            // Отображаем модальное окно и изображение
-            modal.style.display = "flex";
-            modalImg.src = imgEl.src;
-        }
+    return null;
+}
 
-    console.log(imgEl);
+function createFileWindow(targetEl, isImage) {
+    const modal = document.getElementById("imageLoupe");
+
+    // Определяем тип модального контента (изображение или видео)
+    const modalFileType = isImage ? "modalImage" : "modalVideo";
+    const modalFile = document.getElementById(modalFileType);
+
+    if (targetEl) {
+        // Отображаем модальное окно и нужный контент (изображение или видео)
+        modal.style.display = "flex";
+        modalFile.src = targetEl.src;
+        modalFile.style.display = 'flex';
+    }
+
+    console.log(targetEl);
 }
 
 function deletePopUpMain(){
@@ -176,7 +202,8 @@ function createBodyPopUp_Type0(question){
     elChB.appendChild(elChBChB);
     el.appendChild(elChB);
 
-    if (question.image) elChBChB.appendChild(createImgDiv_Type0(question));
+    if (question.image) elChBChB.appendChild(createImgDiv_Type0(question))
+    else if(question.video) elChBChB.appendChild(createVidDiv_Type0(question))
 
     elChBChB.appendChild(createAnswers_Type0(question));
 
@@ -236,7 +263,22 @@ function createImgDiv_Type0(question){
     img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.png`);
     el.appendChild(img);
 
-    el.appendChild(createImgLoupe())
+    el.appendChild(createLoupe())
+
+    return el;
+}
+
+function createVidDiv_Type0(question){
+    let el = document.createElement("div");
+    el.setAttribute("class", "question_type_0_vid");
+    el.setAttribute("id", "question_type_0_img");
+    
+    let img = document.createElement("video");
+    img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.mp4`);
+    img.setAttribute("controls", `true`);
+    el.appendChild(img);
+
+    el.appendChild(createLoupe())
 
     return el;
 }
@@ -451,7 +493,7 @@ function createAnswer_Type3(question, i){
     elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}/${[i]}.png`);
     elChBChB.setAttribute("alt", "");
     elChB.appendChild(elChBChB);
-    elChB.appendChild(createImgLoupe("resize_btn_type_3"))
+    elChB.appendChild(createLoupe("resize_btn_type_3"))
     el.appendChild(elChB);
     let elChD = document.createElement("div");
     elChD.setAttribute("class", "question_type_3_answer_drop_zone");
@@ -606,13 +648,27 @@ function createDropDownImage_Type5(question){
     let el = document.createElement("div");
     el.setAttribute("class", "question_type_5_dropdown_image");
     let elChB = document.createElement("div");
-    elChB.setAttribute("class", "question_type_5_image");
-    let elChBChB = document.createElement("img");
-    elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.png`);
-    elChBChB.setAttribute("alt", "");
-    elChB.appendChild(elChBChB);
-    elChB.appendChild(createImgLoupe("resize_btn_type_5"))
-    if (question.image != null) el.appendChild(elChB);
+    
+
+    
+    if (question.image) {
+        elChB.setAttribute("class", "question_type_5_image");
+        let elChBChB = document.createElement("img");
+        elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.png`);
+        elChBChB.setAttribute("alt", "");
+        elChB.appendChild(elChBChB);
+        elChB.appendChild(createLoupe("resize_btn_type_5"))
+        el.appendChild(elChB)
+    }else if(question.video){
+        elChB.setAttribute("class", "question_type_5_video");
+        let elChBChB = document.createElement("video");
+        elChBChB.controls = true;
+        elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.mp4`);
+        elChBChB.setAttribute("alt", "");
+        elChB.appendChild(elChBChB);
+        elChB.appendChild(createLoupe("resize_btn_type_5 resize_btn_type_5_video"))
+        el.appendChild(elChB)
+    }
 
     el.appendChild(createAnswers_Type5(question));
 
