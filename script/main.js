@@ -131,10 +131,23 @@ function getUserAnswers(el){
             }
         }
         
-    }else {
+    }else if (currentQuestionType == 6) {
+        let circleOccupancy = window.type6Data.circleOccupancy;
+        for (let i = 0; i < Object.keys(circleOccupancy).length; i++) {
+            let targetFieldId = circleOccupancy[i];
+            if (targetFieldId) {
+                let targetIndex = parseInt(targetFieldId.replace('targetField', ''));
+                arr.push(targetIndex);
+            } else {
+                arr.push(null); // Если круг не соединен
+            }
+        }
+    }
+    else {
+        
         for (el of el.target) if(el.checked) arr.push(parseInt(el.value));
     }
-
+    
     return arr;
 }
 
@@ -159,6 +172,18 @@ function userHasAnswers(answers){
         console.log(sumOfCorrect);
         console.log(sumOfUsers);
         return sumOfCorrect === sumOfUsers;
+    }else if (currentQuestionType == 6) {
+        // Получаем данные из глобального объекта, созданного в initializeType6SVG
+        let circleOccupancy = window.type6Data.circleOccupancy;
+
+        // Проверяем, что все значения в circleOccupancy не равны null
+        for (let index in circleOccupancy) {
+            if (circleOccupancy[index] === null) {
+                console.log('false')
+                return false;
+            }
+        }
+        return true;
     }
 }
 
@@ -184,6 +209,26 @@ function showErrors(e){
         console.log(e.target);
         let dragItems = e.target.getElementsByClassName(`question_type_4_answers`)[0].children;
         for (el of dragItems) elToErrors.push(el);
+    }else if (currentQuestionType === 6) {
+        // Получаем данные из глобального объекта
+        let occupiedTargets = window.type6Data.occupiedTargets;
+
+        // Проходим по всем таргетам
+        for (let i = 0; i < allQuestions[currentQuestionId].rightContents.length; i++) {
+            let targetFieldId = 'targetField' + i;
+            let targetElement = document.getElementById(targetFieldId);
+
+            if (targetElement) {
+                if (!occupiedTargets.hasOwnProperty(targetFieldId)) {
+                    // Таргет не занят, добавляем обводку
+                    console.log("asdasdasd")
+                    targetElement.classList.add('error-type6');
+                } else {
+                    // Убираем обводку, если она была
+                    targetElement.classList.remove('error-type6');
+                }
+            }
+        }
     }
 
     for (el of elToErrors){

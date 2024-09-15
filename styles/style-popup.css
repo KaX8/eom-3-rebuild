@@ -904,3 +904,148 @@ input[type='checkbox']:checked {
 
 
 
+
+
+/* Стили для вопроса типа 6 */
+.question_type_6_body .question_type_6_mapping {
+    margin: 2vh;
+    width: 100%;
+    position: relative;
+}
+
+.question_type_6_body .question_type_6_pair {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 2vh;
+    height: 100px;
+}
+
+.question_type_6_body .question_type_6_left_block,
+.question_type_6_body .question_type_6_right_block {
+    display: flex;
+    align-items: center;
+}
+
+.question_type_6_body .question_type_6_left_block {
+    width: 30%; /* Оставляем небольшой отступ */
+}
+
+.question_type_6_body .question_type_6_right_block {
+    width: 30%; /* Оставляем небольшой отступ */
+/*    justify-content: flex-end; /* Выравниваем элементы вправо */*/
+}
+
+.question_type_6_body .question_type_6_left_content,
+.question_type_6_body .question_type_6_right_content {
+    max-width: 150px;
+    max-height: 150px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question_type_6_body .question_type_6_start_point,
+.question_type_6_body .question_type_6_end_point {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    position: relative;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+}
+
+.question_type_6_body .question_type_6_start_point {
+    margin-left: 10px;
+}
+
+.question_type_6_body .question_type_6_end_point {
+    margin-right: 10px;
+    background-color: #e0e0e0;
+}
+
+/* Стили для контейнера контента */
+.question_type_6_content_container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-content {
+    font-size: 1vw;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.question_type_6_content_container img,
+.question_type_6_content_container video {
+    border: solid;
+}
+
+.question_type_6_content_container img{
+    max-width: 35%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.question_type_6_content_container video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.question_type_6_mapping svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+}
+
+.question_type_6_mapping svg circle {
+    cursor: pointer;
+    pointer-events: all;
+}
+
+/* Адаптивность для небольших экранов */
+@media (max-width: 768px) {
+    .question_type_6_body .question_type_6_pair {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .question_type_6_body .question_type_6_left_block,
+    .question_type_6_body .question_type_6_right_block {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .question_type_6_body .question_type_6_left_content,
+    .question_type_6_body .question_type_6_right_content {
+        width: 100%;
+    }
+
+    .question_type_6_body .question_type_6_start_point,
+    .question_type_6_body .question_type_6_end_point {
+        margin: 10px 0;
+    }
+}
+
+.error-type6 {
+    border: 2px solid red !important;
+}
+
+.correct-answer {
+    background-color: #69b51a !important; /* Зелёный цвет */
+}
+
+.wrong-answer {
+    background-color: #b51a1a !important; /* Красный цвет */
+}
+

@@ -94,5 +94,25 @@ let allQuestions = [
         correctAnswer: [3, 2, 1, 0],
         answered: null,
     },
+    {
+        type: 6,
+        text: "Соедините соответствующие элементы",
+        leftContents: [
+            { type: 'text', value: 'Текст слева 1' },
+            { type: 'image' }, 
+            { type: 'video' }, 
+            { type: 'text', value: 'Текст слева 4' }
+        ],
+        rightContents: [
+            { type: 'image' }, 
+            { type: 'text', value: 'Текст справа 2' },
+            { type: 'text', value: 'Текст справа 3' },
+            { type: 'video' } 
+        ],
+        correctAnswer: [0, 1, 2, 3],
+        price: 10,
+        answered: null,
+    }
+
     
 ];
