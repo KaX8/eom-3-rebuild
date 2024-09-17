@@ -83,6 +83,10 @@ function createPopUpMain(question){
         case 6:
             elChB.appendChild(createBodyPopUp_Type6(question));
             break;
+
+        case 7:
+            elChB.appendChild(createBodyPopUp_Type7(question));
+            break;
     
         default:
             break
@@ -144,41 +148,58 @@ function createLoupe(addClasses = "") {
     el.addEventListener('click', () => {
         const parentDiv = el.parentElement;
 
-        // Определяем целевой элемент (изображение или видео)
+        // Определяем целевой элемент (изображение, видео или текстовый блок)
         const targetEl = findMediaElement(parentDiv);
         
         if (targetEl) {
-            const isImage = targetEl.tagName.toLowerCase() === 'img';
-            createFileWindow(targetEl, isImage);
-        }else{
-            console.log('а где')
+            const tagName = targetEl.tagName.toLowerCase();
+            createFileWindow(targetEl, tagName);
+        } else {
+            console.log('Контент не найден');
         }
     });
 
     return el;
 }
 
-// Функция для поиска изображения или видео в родительском элементе
+// Функция для поиска контента (текста, изображения или видео) в родительском элементе
 function findMediaElement(parent) {
-    const questionData = allQuestions[currentQuestionId];
-
-    return parent.getElementsByTagName('*')[0]
-
+    // Ищем в родительском элементе img, video или div
+    const mediaSelectors = ['img', 'video', 'div'];
+    for (let selector of mediaSelectors) {
+        const el = parent.querySelector(selector);
+        if (el) {
+            return el;
+        }
+    }
     return null;
 }
 
-function createFileWindow(targetEl, isImage) {
+function createFileWindow(targetEl, tagName) {
     const modal = document.getElementById("imageLoupe");
 
-    // Определяем тип модального контента (изображение или видео)
-    const modalFileType = isImage ? "modalImage" : "modalVideo";
-    const modalFile = document.getElementById(modalFileType);
+    // Скрываем все возможные контенты в модальном окне
+    const modalImage = document.getElementById("modalImage");
+    const modalVideo = document.getElementById("modalVideo");
+    const modalText = document.getElementById("modalText");
+
+    modalImage.style.display = 'none';
+    modalVideo.style.display = 'none';
+    modalText.style.display = 'none';
 
     if (targetEl) {
-        // Отображаем модальное окно и нужный контент (изображение или видео)
+        // Отображаем модальное окно и нужный контент
         modal.style.display = "flex";
-        modalFile.src = targetEl.src;
-        modalFile.style.display = 'flex';
+        if (tagName === 'img') {
+            modalImage.src = targetEl.src;
+            modalImage.style.display = 'flex';
+        } else if (tagName === 'video') {
+            modalVideo.src = targetEl.src;
+            modalVideo.style.display = 'flex';
+        } else if (tagName === 'div') {
+            modalText.innerHTML = targetEl.innerHTML;
+            modalText.style.display = 'flex';
+        }
     }
 
     console.log(targetEl);
@@ -274,7 +295,6 @@ function createImgDiv_Type0(question){
 
     return el;
 }
-
 function createVidDiv_Type0(question){
     let el = document.createElement("div");
     el.setAttribute("class", "question_type_0_vid");
@@ -762,7 +782,6 @@ function createDropdownBlock_Type5(question, i){
     el.appendChild(elChD);
 
     return el;
-
 }
 
 function createResult(){
@@ -879,7 +898,6 @@ function createResult(){
 
     return el;
 }
-
 function createDragNDropHandlers(question) {
     let idq = question.type;
     
@@ -892,7 +910,6 @@ function createDragNDropHandlers(question) {
             break;
     }
 }
-
 function DnDHandlers_Type_3(argument) {
     var row = document.getElementsByClassName('question_type_3_drags')[0];
     var countDrops = row.children.length;
@@ -949,7 +966,6 @@ function DnDHandlers_Type_3(argument) {
             }
         });
 }
-
 function DnDHandlers_Type_4(argument) {
     // body... question_type_4_answer_drop_zone
     var row = document.getElementsByClassName('question_type_4_answers')[0];
@@ -1016,7 +1032,6 @@ function createBodyPopUp_Type6(question) {
 
     return el;
 }
-
 function createPairBlock_Type6(question, index, questionId, isQuestionAnswered, userAnswers) {
     // Контейнер для пары
     let pairContainer = document.createElement("div");
@@ -1034,7 +1049,6 @@ function createPairBlock_Type6(question, index, questionId, isQuestionAnswered, 
 
     return pairContainer;
 }
-
 function createLeftBlock_Type6(contentData, index, questionId) {
     // Левый блок
     let leftBlock = document.createElement("div");
@@ -1055,7 +1069,6 @@ function createLeftBlock_Type6(contentData, index, questionId) {
 
     return leftBlock;
 }
-
 function createRightBlock_Type6(contentData, index, questionId, isQuestionAnswered, userAnswers) {
     // Правый блок
     let rightBlock = document.createElement("div");
@@ -1081,8 +1094,6 @@ function createRightBlock_Type6(contentData, index, questionId, isQuestionAnswer
 
     return rightBlock;
 }
-
-
 function addAnswerClass_Type6(endPoint, questionId, index, userAnswers) {
     let question = allQuestions[questionId];
     let correctAnswers = question.correctAnswer; // Предполагаем, что правильные ответы хранятся в correctAnswer
@@ -1121,11 +1132,17 @@ function createContentElement_Type6(content, side, index, questionId) {
     
     let contentEl;
     let contentIsNeedLoupe = false
+    let loupeClasses = "resize_btn_type_6"
 
     if (content.type === 'text') {
         contentEl = document.createElement("div");
         contentEl.innerText = content.value;
-        contentEl.classList.add('text-content');
+        contentEl.classList.add('question_type_6_text_content');
+        if (content.value.length > 70) {
+            contentIsNeedLoupe = true
+            loupeClasses = loupeClasses + " resize_btn_type_6_text"
+        }
+
     } else if (content.type === 'image') {
         contentEl = document.createElement("img");
         let imgSrc = `content/quiz-images/type6/img/${questionId}-${side === 'left' ? '0' : '1'}-${index}.png`;
@@ -1144,7 +1161,7 @@ function createContentElement_Type6(content, side, index, questionId) {
 
     contentContainer.appendChild(contentEl);
 
-    if (contentIsNeedLoupe) contentContainer.appendChild(createLoupe("resize_btn_type_6"));
+    if (contentIsNeedLoupe) contentContainer.appendChild(createLoupe(loupeClasses));
 
     return contentContainer;
 }
@@ -1152,13 +1169,14 @@ function createContentElement_Type6(content, side, index, questionId) {
 
 
 function createSVG_Type6(itemCount, userAnswers) {
-    // Создаем глобальный SVG
+    // Create global SVG
     var globalDraw = SVG().addTo('.question_type_6_mapping').size('100%', '100%').attr({ style: 'position: absolute; top: 0; left: 0;' });
-    
-    // Инициализируем объект данных
+
+    // Initialize data object
     var type6Data = {
         globalDraw: globalDraw,
         circles: {},
+        smallCircles: {}, // Add small circles storage
         lines: {},
         startPositions: {},
         occupiedTargets: {},
@@ -1172,7 +1190,10 @@ function createSVG_Type6(itemCount, userAnswers) {
         createSVGElements_Type6(i, userAnswers, type6Data);
     }
 
-    // Сохраняем данные для доступа из других функций
+    // Add event listener for window resize
+    window.addEventListener('resize', updateSVG_Type6);
+
+    // Save data for access from other functions
     window.type6Data = type6Data;
 }
 
@@ -1182,11 +1203,6 @@ function createSVGElements_Type6(index, userAnswers, type6Data) {
 
     let startField = document.getElementById('startField' + index);
     let endField = document.getElementById('targetField' + index);
-
-    if (!startField || !endField) {
-        console.error('Элемент не найден:', 'startField' + index, 'или', 'targetField' + index);
-        return;
-    }
 
     let startRect = startField.getBoundingClientRect();
 
@@ -1202,19 +1218,19 @@ function createSVGElements_Type6(index, userAnswers, type6Data) {
     // Создаем и инициализируем круг
     createSVGCircle_Type6(index, userAnswers, type6Data);
 }
-
 function createSVGCircle_Type6(index, userAnswers, type6Data) {
-    var {globalDraw, mappingRect, circles, lines, startPositions, occupiedTargets, circleOccupancy, draggableEnabled, itemCount} = type6Data;
+    var {globalDraw, mappingRect, circles, smallCircles, lines, startPositions, occupiedTargets, circleOccupancy, draggableEnabled, itemCount} = type6Data;
     let startX = startPositions[index].x;
     let startY = startPositions[index].y;
 
-    // Создаем доп круг
+    // Create small circle
     let circleAdd = globalDraw.circle(15).fill('#ff7276').center(startX, startY);
 
-    // Создаем круг
-    let circle = globalDraw.circle(30).fill('#ff7276').center(startX, startY).attr('id', 'draggableCircle' + index);
+    // Store the small circle
+    smallCircles[index] = circleAdd;
 
-    
+    // Create main circle
+    let circle = globalDraw.circle(30).fill('#ff7276').center(startX, startY).attr('id', 'draggableCircle' + index);
 
     circles[index] = circle;
     circleOccupancy[index] = null;
@@ -1256,16 +1272,400 @@ function createSVGCircle_Type6(index, userAnswers, type6Data) {
         circle.css({ cursor: 'default' });
     }
 }
-
 function onCircleDrag_Type6(e, circleElement, index, type6Data) {
     var { lines, startPositions } = type6Data;
     let newX = circleElement.cx();
     let newY = circleElement.cy();
     lines[index].plot(startPositions[index].x, startPositions[index].y, newX, newY);
 }
-
 function onCircleDragEnd_Type6(e, circleElement, index, type6Data) {
     var { mappingRect, itemCount, circles, lines, startPositions, occupiedTargets, circleOccupancy } = type6Data;
+    let newX = circleElement.cx();
+    let newY = circleElement.cy();
+
+    let circleRect = circleElement.node.getBoundingClientRect();
+    let circleCenterX = circleRect.left - mappingRect.left + circleRect.width / 2;
+    let circleCenterY = circleRect.top - mappingRect.top + circleRect.height / 2;
+
+    let overTarget = false;
+    let targetFieldId = null;
+
+    // Проверяем, находится ли круг над каким-либо таргет-полем
+    for (let j = 0; j < itemCount; j++) {
+        let targetField = document.getElementById('targetField' + j);
+        let targetRect = targetField.getBoundingClientRect();
+        let targetLeft = targetRect.left - mappingRect.left;
+        let targetRight = targetRect.right - mappingRect.left;
+        let targetTop = targetRect.top - mappingRect.top;
+        let targetBottom = targetRect.bottom - mappingRect.top;
+
+        if (circleCenterX > targetLeft && circleCenterX < targetRight &&
+            circleCenterY > targetTop && circleCenterY < targetBottom) {
+            overTarget = true;
+            targetFieldId = 'targetField' + j;
+            break;
+        }
+    }
+
+    if (overTarget) {
+        // Проверяем, не занят ли таргет другим кружком
+        if (occupiedTargets[targetFieldId] !== undefined && occupiedTargets[targetFieldId] !== index) {
+            // Таргет уже занят другим кружком, выполняем замену
+            let previousCircleIndex = occupiedTargets[targetFieldId];
+            let previousCircle = circles[previousCircleIndex];
+
+            // Возвращаем предыдущий кружок на стартовую позицию
+            previousCircle.animate(300).center(startPositions[previousCircleIndex].x, startPositions[previousCircleIndex].y);
+            lines[previousCircleIndex].plot(startPositions[previousCircleIndex].x, startPositions[previousCircleIndex].y, startPositions[previousCircleIndex].x, startPositions[previousCircleIndex].y);
+
+            // Обновляем информацию о занятости
+            circleOccupancy[previousCircleIndex] = null;
+        } else if (occupiedTargets[targetFieldId] === index) {
+            // Если таргет уже занят этим же кружком, ничего не делаем
+        }
+
+        // Обновляем информацию о предыдущем таргете
+        if (circleOccupancy[index] && circleOccupancy[index] !== targetFieldId) {
+            delete occupiedTargets[circleOccupancy[index]];
+        }
+
+        // Обновляем информацию о занятости
+        occupiedTargets[targetFieldId] = index;
+        circleOccupancy[index] = targetFieldId;
+
+        // Перемещаем текущий кружок в центр таргета
+        let targetRect = document.getElementById(targetFieldId).getBoundingClientRect();
+        let targetCenterX = targetRect.left - mappingRect.left + targetRect.width / 2;
+        let targetCenterY = targetRect.top - mappingRect.top + targetRect.height / 2;
+        circleElement.animate(300).center(targetCenterX, targetCenterY);
+
+        // Обновляем линию
+        lines[index].plot(startPositions[index].x, startPositions[index].y, targetCenterX, targetCenterY);
+
+        // Убираем обводку с таргета, если она была
+        document.getElementById(targetFieldId).classList.remove('error-type6');
+    } else {
+        // Возвращаем кружок на стартовую позицию
+        circleElement.animate(300).center(startPositions[index].x, startPositions[index].y);
+        lines[index].plot(startPositions[index].x, startPositions[index].y, startPositions[index].x, startPositions[index].y);
+
+        // Обновляем информацию о занятости
+        if (circleOccupancy[index]) {
+            delete occupiedTargets[circleOccupancy[index]];
+            circleOccupancy[index] = null;
+        }
+    }
+}
+function updateSVG_Type6() {
+    var type6Data = window.type6Data;
+    if (!type6Data) return; // Exit if type6Data is not initialized
+
+    // Update mappingRect
+    type6Data.mappingRect = document.querySelector('.question_type_6_mapping').getBoundingClientRect();
+
+    var { itemCount, circles, smallCircles, lines, startPositions, occupiedTargets, circleOccupancy } = type6Data;
+
+    // Recalculate start positions
+    for (let i = 0; i < itemCount; i++) {
+        let startField = document.getElementById('startField' + i);
+        let startRect = startField.getBoundingClientRect();
+
+        // Update startPositions
+        let startX = startRect.left - type6Data.mappingRect.left + startRect.width / 2;
+        let startY = startRect.top - type6Data.mappingRect.top + startRect.height / 2;
+        startPositions[i] = { x: startX, y: startY };
+    }
+
+    // Update positions of circles, small circles, and lines
+    for (let i = 0; i < itemCount; i++) {
+        let circle = circles[i];
+        let smallCircle = smallCircles[i];
+        let line = lines[i];
+
+        let isOnTarget = circleOccupancy[i] !== null;
+
+        if (isOnTarget) {
+            // Circle is on a target; update its position
+            let targetFieldId = circleOccupancy[i];
+            let targetField = document.getElementById(targetFieldId);
+            let targetRect = targetField.getBoundingClientRect();
+
+            let targetCenterX = targetRect.left - type6Data.mappingRect.left + targetRect.width / 2;
+            let targetCenterY = targetRect.top - type6Data.mappingRect.top + targetRect.height / 2;
+
+            // Move main circle to new target center
+            circle.center(targetCenterX, targetCenterY);
+
+            // Update line
+            line.plot(startPositions[i].x, startPositions[i].y, targetCenterX, targetCenterY);
+
+            // Keep small circle at the start position
+            smallCircle.center(startPositions[i].x, startPositions[i].y);
+        } else {
+            // Circle is at its initial position; update position
+            let startX = startPositions[i].x;
+            let startY = startPositions[i].y;
+
+            circle.center(startX, startY);
+
+            // Update line
+            line.plot(startX, startY, startX, startY);
+
+            // Move small circle to the start position
+            smallCircle.center(startX, startY);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+function createBodyPopUp_Type7(question) {
+    let el = document.createElement("div");
+    el.className = "question_type_7_body";
+
+    let elChB = document.createElement("form");
+    elChB.style.width = "100%";
+
+    // Контейнер для интерактивной области
+    let mappingContainer = document.createElement("div");
+    mappingContainer.className = "question_type_7_mapping";
+
+    // Индекс текущего вопроса
+    let questionId = allQuestions.indexOf(question);
+    currentQuestionId = questionId; // Убедитесь, что переменная объявлена глобально или используйте let/var
+
+    // Проверяем, был ли вопрос отвечен
+    let isQuestionAnswered = !!allQuestions[currentQuestionId].answered;
+
+    let userAnswers = question.answered; // Ответы пользователя
+
+    // Создаём колонки
+    question.leftContents.forEach((leftContent, index) => {
+        let column = document.createElement("div");
+        column.className = "question_type_7_column";
+
+        // Верхний Контент
+        let topContentContainer = createContentElement_Type7(leftContent, 'top', index, questionId);
+        column.appendChild(topContentContainer);
+
+        // Круг Старт
+        let startPoint = document.createElement("div");
+        startPoint.className = "question_type_7_start_point";
+        startPoint.id = `startField${index}`;
+        column.appendChild(startPoint);
+
+        // Круг Таргет
+        let targetPoint = document.createElement("div");
+        targetPoint.className = "question_type_7_target_point";
+        targetPoint.id = `targetField${index}`;
+        column.appendChild(targetPoint);
+
+        // Добавляем классы правильного или неправильного ответа
+        if (allQuestions[currentQuestionId].answered) {
+            addAnswerClass_Type7(targetPoint, index);
+        }
+
+        // Нижний Контент (может быть из rightContents или другой логики)
+        let bottomContent = question.rightContents[index];
+        if (bottomContent) {
+            let bottomContentContainer = createContentElement_Type7(bottomContent, 'bottom', index, questionId);
+            column.appendChild(bottomContentContainer);
+        }
+
+        // Добавляем колонку в контейнер интерактивной области
+        mappingContainer.appendChild(column);
+    });
+
+    elChB.appendChild(mappingContainer);
+    el.appendChild(elChB);
+
+    if (!questionIsPassed(question)) {
+        elChB.appendChild(createBottomPopUp(question));
+    }
+
+    // Инициализируем SVG и интерактивность после добавления элементов в DOM
+    setTimeout(() => {
+        createSVG_Type7(question.leftContents.length, question.answered);
+    }, 0);
+
+    return el;
+}
+
+function createContentElement_Type7(content, position, index, questionId) {
+    // Создаем контейнер для контента
+    let contentContainer = document.createElement('div');
+
+    // Базовые классы
+    contentContainer.classList.add('question_type_7_content_container');
+    contentContainer.classList.add(`question_type_7_${position}_content`);
+
+    let contentEl;
+    let contentIsNeedLoupe = false;
+
+    if (content.type === 'text') {
+        contentEl = document.createElement("div");
+        contentEl.innerText = content.value;
+        contentEl.classList.add('question_type_7_text_content');
+        // Если текст длинный, добавляем кнопку лупы
+        if (content.value.length > 70) {
+            contentIsNeedLoupe = true;
+        }
+    } else if (content.type === 'image') {
+        contentEl = document.createElement("img");
+        let imgSrc = `content/quiz-images/type7/img/${questionId}-${position === 'top' ? '0' : '1'}-${index}.png`;
+        contentEl.setAttribute("src", imgSrc);
+        contentEl.setAttribute("alt", "image content");
+        contentEl.classList.add('image-content', 'type7-image');
+        contentIsNeedLoupe = true;
+    } else if (content.type === 'video') {
+        contentEl = document.createElement("video");
+        let vidSrc = `content/quiz-images/type7/vid/${questionId}-${position === 'top' ? '0' : '1'}-${index}.mp4`;
+        contentEl.setAttribute("src", vidSrc);
+        contentEl.classList.add('video-content', 'type7-video');
+        contentIsNeedLoupe = true;
+    }
+
+    contentContainer.appendChild(contentEl);
+
+    // Добавляем кнопку лупы, если необходимо
+    if (contentIsNeedLoupe) {
+        let loupeBtn = document.createElement("div");
+        loupeBtn.classList.add("resize_btn_type_7");
+        contentContainer.appendChild(loupeBtn);
+
+        // Добавляем обработчик события для открытия лупы
+        loupeBtn.addEventListener("click", () => {
+            if (content.type === 'text') {
+                openLoupe(content.value, 'text');
+            } else if (content.type === 'image') {
+                openLoupe(contentEl.src, 'image');
+            } else if (content.type === 'video') {
+                openLoupe(contentEl.src, 'video');
+            }
+        });
+    }
+
+    return contentContainer;
+}
+
+function createSVG_Type7(itemCount, userAnswers) {
+    // Создаем глобальный SVG
+    var globalDraw = SVG().addTo('.question_type_7_mapping').size('100%', '100%').attr({ style: 'position: absolute; top: 0; left: 0; z-index: 1000;' });
+
+    // Инициализируем объект данных
+    var type7Data = {
+        globalDraw: globalDraw,
+        circles: {},
+        smallCircles: {}, // Добавляем для хранения маленьких кругов
+        lines: {},
+        startPositions: {},
+        occupiedTargets: {},
+        circleOccupancy: {},
+        mappingRect: document.querySelector('.question_type_7_mapping').getBoundingClientRect(),
+        draggableEnabled: !allQuestions[currentQuestionId].answered,
+        itemCount: itemCount
+    };
+
+    for (let i = 0; i < itemCount; i++) {
+        createSVGElements_Type7(i, userAnswers, type7Data);
+    }
+
+    // Добавляем обработчик события изменения размера окна
+    window.addEventListener('resize', updateSVG_Type7);
+
+    // Сохраняем данные для доступа из других функций
+    window.type7Data = type7Data;
+}
+
+function createSVGElements_Type7(index, userAnswers, type7Data) {
+    // Извлекаем переменные из type7Data
+    var { globalDraw, mappingRect, circles, smallCircles, lines, startPositions, occupiedTargets, circleOccupancy, draggableEnabled, itemCount } = type7Data;
+
+    let startField = document.getElementById('startField' + index);
+    let endField = document.getElementById('targetField' + index);
+
+    let startRect = startField.getBoundingClientRect();
+
+    // Координаты центра стартовой точки
+    let startX = startRect.left - mappingRect.left + startRect.width / 2;
+    let startY = startRect.top - mappingRect.top + startRect.height / 2;
+    startPositions[index] = { x: startX, y: startY };
+
+    // Создаем линию
+    let line = globalDraw.line().plot(startX, startY, startX, startY).stroke({ width: 3, color: '#ff7276' });
+    lines[index] = line;
+
+    // Создаем и инициализируем круг
+    createSVGCircle_Type7(index, userAnswers, type7Data);
+}
+
+function createSVGCircle_Type7(index, userAnswers, type7Data) {
+    var { globalDraw, mappingRect, circles, smallCircles, lines, startPositions, occupiedTargets, circleOccupancy, draggableEnabled, itemCount } = type7Data;
+    let startX = startPositions[index].x;
+    let startY = startPositions[index].y;
+
+    // Создаем доп круг
+    let circleAdd = globalDraw.circle(15).fill('#ff7276').center(startX, startY);
+    smallCircles[index] = circleAdd; // Сохраняем маленький круг
+
+    // Создаем круг
+    let circle = globalDraw.circle(30).fill('#ff7276').center(startX, startY).attr('id', 'draggableCircle7_' + index);
+
+    circles[index] = circle;
+    circleOccupancy[index] = null;
+
+    // Проверяем, есть ли предыдущий ответ для данного круга
+    if (userAnswers && userAnswers[index] !== null && userAnswers[index] !== undefined) {
+        let targetIndex = userAnswers[index];
+        let targetFieldId = 'targetField' + targetIndex;
+        let targetField = document.getElementById(targetFieldId);
+
+        if (targetField) {
+            let targetRect = targetField.getBoundingClientRect();
+            let targetCenterX = targetRect.left - mappingRect.left + targetRect.width / 2;
+            let targetCenterY = targetRect.top - mappingRect.top + targetRect.height / 2;
+
+            // Перемещаем круг в центр таргета
+            circle.center(targetCenterX, targetCenterY);
+
+            // Обновляем линию
+            lines[index].plot(startX, startY, targetCenterX, targetCenterY);
+
+            // Обновляем информацию о занятости
+            occupiedTargets[targetFieldId] = index;
+            circleOccupancy[index] = targetFieldId;
+        }
+    }
+
+    if (draggableEnabled) {
+        // Делаем круг перетаскиваемым
+        circle.draggable().on('dragmove', function (e) {
+            onCircleDrag_Type7(e, this, index, type7Data);
+        });
+
+        // Обработка окончания перетаскивания
+        circle.on('dragend', function (e) {
+            onCircleDragEnd_Type7(e, this, index, type7Data);
+        });
+    } else {
+        circle.css({ cursor: 'default' });
+    }
+}
+
+function onCircleDrag_Type7(e, circleElement, index, type7Data) {
+    var { lines, startPositions } = type7Data;
+    let newX = circleElement.cx();
+    let newY = circleElement.cy();
+    lines[index].plot(startPositions[index].x, startPositions[index].y, newX, newY);
+}
+
+function onCircleDragEnd_Type7(e, circleElement, index, type7Data) {
+    var { mappingRect, itemCount, circles, lines, startPositions, occupiedTargets, circleOccupancy } = type7Data;
     let newX = circleElement.cx();
     let newY = circleElement.cy();
 
@@ -1342,6 +1742,87 @@ function onCircleDragEnd_Type6(e, circleElement, index, type6Data) {
         }
     }
 }
+
+function addAnswerClass_Type7(endPoint, index) {
+    let userAnswers = allQuestions[currentQuestionId].answered;
+    let question = allQuestions[currentQuestionId];
+    let correctAnswers = question.correctAnswer; // Предполагаем, что правильные ответы хранятся в correctAnswer
+    let userAnswer = userAnswers[index];
+
+    if (userAnswer !== null && userAnswer !== undefined) {
+        if (correctAnswers[index] === userAnswer) {
+            endPoint.classList.add('correct-answer');
+        } else {
+            endPoint.classList.add('wrong-answer');
+        }
+    } else {
+        // Пользователь не дал ответ для этого элемента
+        endPoint.classList.add('wrong-answer');
+    }
+}
+
+function updateSVG_Type7() {
+    var type7Data = window.type7Data;
+    if (!type7Data) return; // Если данные не инициализированы, выходим из функции
+
+    // Обновляем mappingRect
+    type7Data.mappingRect = document.querySelector('.question_type_7_mapping').getBoundingClientRect();
+
+    var { itemCount, circles, lines, startPositions, occupiedTargets, circleOccupancy } = type7Data;
+
+    // Пересчитываем стартовые позиции
+    for (let i = 0; i < itemCount; i++) {
+        let startField = document.getElementById('startField' + i);
+        let startRect = startField.getBoundingClientRect();
+
+        // Обновляем стартовые позиции
+        let startX = startRect.left - type7Data.mappingRect.left + startRect.width / 2;
+        let startY = startRect.top - type7Data.mappingRect.top + startRect.height / 2;
+        startPositions[i] = { x: startX, y: startY };
+    }
+
+    // Обновляем позиции кругов и линий
+    for (let i = 0; i < itemCount; i++) {
+        let circle = circles[i];
+        let line = lines[i];
+
+        let isOnTarget = circleOccupancy[i] !== null;
+
+        if (isOnTarget) {
+            // Круг находится на таргете; обновляем его позицию
+            let targetFieldId = circleOccupancy[i];
+            let targetField = document.getElementById(targetFieldId);
+            let targetRect = targetField.getBoundingClientRect();
+
+            let targetCenterX = targetRect.left - type7Data.mappingRect.left + targetRect.width / 2;
+            let targetCenterY = targetRect.top - type7Data.mappingRect.top + targetRect.height / 2;
+
+            // Перемещаем круг на новую позицию таргета
+            circle.center(targetCenterX, targetCenterY);
+
+            // Обновляем линию
+            line.plot(startPositions[i].x, startPositions[i].y, targetCenterX, targetCenterY);
+        } else {
+            // Круг находится на стартовой позиции; обновляем позицию
+            let startX = startPositions[i].x;
+            let startY = startPositions[i].y;
+
+            circle.center(startX, startY);
+
+            // Обновляем линию
+            line.plot(startX, startY, startX, startY);
+        }
+
+        // Обновляем дополнительный круг (circleAdd)
+        let circleAdd = type7Data.smallCircles[i];
+        if (circleAdd) {
+            let startX = startPositions[i].x;
+            let startY = startPositions[i].y;
+            circleAdd.center(startX, startY);
+        }
+    }
+}
+
 
 
 

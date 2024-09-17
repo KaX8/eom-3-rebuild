@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function(){
         question.addEventListener('click', handleQuestionClick);
     }
 
-    imageModalClose = document.getElementsByClassName('imageLopueClose')[0];
+    imageModalClose = document.getElementsByClassName('imageLoupeClose')[0];
     imageModalClose.onclick = fileModalClose;
 
     // DEBUGGING
@@ -142,6 +142,17 @@ function getUserAnswers(el){
                 arr.push(null); // Если круг не соединен
             }
         }
+    }else if (currentQuestionType == 7) {
+        let circleOccupancy = window.type7Data.circleOccupancy;
+        for (let i = 0; i < Object.keys(circleOccupancy).length; i++) {
+            let targetFieldId = circleOccupancy[i];
+            if (targetFieldId) {
+                let targetIndex = parseInt(targetFieldId.replace('targetField', ''));
+                arr.push(targetIndex);
+            } else {
+                arr.push(null); // Если круг не соединен
+            }
+        }
     }
     else {
         
@@ -184,6 +195,18 @@ function userHasAnswers(answers){
             }
         }
         return true;
+    }else if (currentQuestionType == 7) {
+        // Получаем данные из глобального объекта, созданного в initializeType6SVG
+        let circleOccupancy = window.type7Data.circleOccupancy;
+
+        // Проверяем, что все значения в circleOccupancy не равны null
+        for (let index in circleOccupancy) {
+            if (circleOccupancy[index] === null) {
+                console.log('false')
+                return false;
+            }
+        }
+        return true;
     }
 }
 
@@ -209,7 +232,7 @@ function showErrors(e){
         console.log(e.target);
         let dragItems = e.target.getElementsByClassName(`question_type_4_answers`)[0].children;
         for (el of dragItems) elToErrors.push(el);
-    }else if (currentQuestionType === 6) {
+    }else if (currentQuestionType == 6) {
         // Получаем данные из глобального объекта
         let occupiedTargets = window.type6Data.occupiedTargets;
 
@@ -221,7 +244,25 @@ function showErrors(e){
             if (targetElement) {
                 if (!occupiedTargets.hasOwnProperty(targetFieldId)) {
                     // Таргет не занят, добавляем обводку
-                    console.log("asdasdasd")
+                    targetElement.classList.add('error-type6');
+                } else {
+                    // Убираем обводку, если она была
+                    targetElement.classList.remove('error-type6');
+                }
+            }
+        }
+    }else if (currentQuestionType == 7) {
+        // Получаем данные из глобального объекта
+        let occupiedTargets = window.type7Data.occupiedTargets;
+
+        // Проходим по всем таргетам
+        for (let i = 0; i < allQuestions[currentQuestionId].rightContents.length; i++) {
+            let targetFieldId = 'targetField' + i;
+            let targetElement = document.getElementById(targetFieldId);
+
+            if (targetElement) {
+                if (!occupiedTargets.hasOwnProperty(targetFieldId)) {
+                    // Таргет не занят, добавляем обводку
                     targetElement.classList.add('error-type6');
                 } else {
                     // Убираем обводку, если она была
@@ -341,126 +382,6 @@ function answerIsCorrect(question, userAnswers){
     return false;
 }
 
-// Функция обработчик события "Взяли объект"
-// function dragNdropHandler(e){
-//     console.log("DRAG-N-DROP");
-//     dragFrom = e.target.parentNode;
-//     console.log(`FROM ${dragFrom}`);
-    
-//     // Создание точной копии объекта
-//     dragNdropObject = e.target;
-//     // e.target.parentNode.appendChild(clone);
-//     // e.target.remove();
-    
-//     // даём элементу абсолютную позицию, да бы перемещать без нарушения верстки
-//     // и перемещаем его на позицию курсора
-//     dragNdropObject.style.position = 'absolute';
-//     dragMoveAt(e, dragNdropObject);
-
-//     // 3, перемещать по экрану
-//     document.onmousemove = function(e) {
-//         dragMoveAt(e, dragNdropObject);
-//     }
-
-//     // 4. отследить окончание переноса
-//     dragNdropObject.onmouseup = function() {
-//         document.onmousemove = null;
-//         dragNdropObject.onmouseup = null;
-//         dragNdropObject.remove();
-
-//         // Отслеживаем, где отпустили объект
-//         document.addEventListener('mouseover', (e) => dropObject(e), {once: true});
-        
-//     }
-// }
-
-// // Функция перемещения объекта и позиционирования его по центру
-// function dragMoveAt(e, el) {
-//     el.style.left = e.clientX - el.offsetWidth / 2 + 'px';
-//     el.style.top = e.clientY - el.offsetHeight / 2 + 'px';
-// }
-
-// // Функция обработчик, отслеживаем где отпустили объект и добавляем его в соотв. drop_zone
-// function dropObject(e){
-//     console.log("Функция обработчик, отслеживаем где отпустили объект и добавляем его в соотв. drop_zone");
-    
-//     let dropTarget = defineDropTarget(e);
-
-//     console.log(dropTarget);
-//     console.log(dropTarget.children.length > 0);
-
-
-
-//     switch(currentQuestionType){
-//         case 3:
-//             // В 3 типе вопросов: 
-//             // Если в таргете, куда перетаскиваем объект, уже что то есть, 
-//             // перемещаем содержимое на место, откуда взяли текущий объект
-//             if (dropTarget.children.length > 0) dragFrom.appendChild(dropTarget.children[0]);
-//             break;
-//         case 4:
-//             // В 3 типе вопросов: ничего не делаем
-//             break;
-//     }
-    
-//     dragNdropObject.classList.remove("un_answered");
-//     dropTarget.classList.remove("un_answered");
-//     dragNdropObject.addEventListener('mousedown', (e) => dragNdropHandler(e));
-//     dragNdropObject.style = null;
-//     dropTarget.appendChild(dragNdropObject);
-
-// }
-
-// function defineDropTarget(e){
-//     let dropTarget;
-//     console.log(currentQuestionType);
-//     console.log(e.target.className);
-//     switch(currentQuestionType){
-//         case 3:
-
-//             console.log(e.target.tagName);
-//             if (e.target.tagName == "IMG"){
-//                 console.log("ITS IMG");
-//                 let parents = e.target.parentNode.parentNode;
-//                 dropTarget = parents.getElementsByClassName(`question_type_3_answer_drop_zone`)[0];
-
-//             }else if (e.target.tagName == "DIV" && e.target.className == `question_type_3_answer`) {
-//                 console.log("ITS WHITE SPACE");
-//                 dropTarget = e.target.getElementsByClassName(`question_type_3_answer_drop_zone`)[0]; 
-//             }else if (e.target.className.indexOf(`drop_zone`) != -1){
-//                 console.log("ITS DROP SPACE");
-//                 dropTarget = e.target;
-
-//             }else if (e.target.tagName == "DIV" && e.target.className == `question_type_3_drag`){
-//                 console.log("ITS ANOTHER DROP");
-//                 dropTarget = e.target.parentNode;
-//             }else{
-                
-//                 console.log("ITS SOMETHERE");
-//                 // console.log(e.target);
-//                 // console.log(dragFrom);
-//                 dropTarget = dragFrom;
-//             }
-//             break;
-//         case 4:
-//             if (e.target.className.indexOf("drop_zone") != -1){
-//                 console.log("ITS DROP SPACE");
-//                 dropTarget = e.target;
-//             }else if(e.target.parentNode.className.indexOf("drop_zone") != -1){
-                
-//                 console.log("ITS ANOTHER DRAG IN DROP SPACE");
-//                 dropTarget = e.target.parentNode;
-//             }else{
-//                 console.log("ITS SOMETHERE");
-//                 dropTarget = dragFrom;
-//             }
-            
-            
-//             break;
-//     }
-
-//     return dropTarget;
-// }
 
 function setTestCompleted(){
     for (question of questionsBtn){

@@ -98,14 +98,14 @@ let allQuestions = [
         type: 6,
         text: "Соедините соответствующие элементы",
         leftContents: [
-            { type: 'text', value: 'Текст слева Текст слева 1 Текст слева 1 Текст слева 11 Текст слева 1 Текст слева 1 Текст слева 1 Текст слева 1 Текст слева 1' },
+            { type: 'text', value: 'Текст слева 1' },
             { type: 'image' }, 
             { type: 'video' }, 
-            { type: 'text', value: '1' }
+            { type: 'text', value: 'Текст слева 4' }
         ],
         rightContents: [
             { type: 'image' }, 
-            { type: 'text', value: 'Текст слева 1 Текст слева 1 Текст слева 1 Текст слева 1 Текст слева 1 Текст слева 1' },
+            { type: 'text', value: 'Текст справа 2' },
             { type: 'text', value: 'Текст справа 3' },
             { type: 'video' } 
         ],
@@ -114,7 +114,29 @@ let allQuestions = [
         correctAnswer: [0, 1, 2, 3],
         price: 10,
         answered: null,
-    }
+    },
+    {
+        type: 7,
+        text: "Соедините соответствующие элементы",
+        leftContents: [
+            { type: 'text', value: 'Текст слева 1' },
+            { type: 'image' }, 
+            { type: 'video' }, 
+            { type: 'text', value: 'Текст слева 4' }
+        ],
+        rightContents: [
+            { type: 'image' }, 
+            { type: 'text', value: 'Текст справа 2' },
+            { type: 'text', value: 'Текст справа 3' },
+            { type: 'video' } 
+        ],
+        image: true,
+        video: true,
+        correctAnswer: [0, 1, 2, 3],
+        price: 10,
+        answered: null,
+    },
+
 
     
 ];
