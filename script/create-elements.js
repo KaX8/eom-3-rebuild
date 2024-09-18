@@ -1079,14 +1079,14 @@ function createRightBlock_Type6(contentData, index, questionId, isQuestionAnswer
     endPoint.className = "question_type_6_end_point";
     endPoint.id = `targetField${index}`;
 
-    // Добавляем классы правильного или неправильного ответа
-    if (isQuestionAnswered) {
-        addAnswerClass_Type6(endPoint, questionId, index, userAnswers);
-    }
-
     // Правый контент
     let rightContent = createContentElement_Type6(contentData, 'right', index, questionId);
     rightContent.classList.add('question_type_6_right_content');
+
+    // Добавляем классы правильного или неправильного ответа
+    if (isQuestionAnswered) {
+        addAnswerClass_Type6(rightContent, questionId, index, userAnswers);
+    }
 
     // Добавляем таргетную точку и правый контент в правый блок
     rightBlock.appendChild(endPoint);
@@ -1465,17 +1465,22 @@ function createBodyPopUp_Type7(question) {
         targetPoint.id = `targetField${index}`;
         column.appendChild(targetPoint);
 
-        // Добавляем классы правильного или неправильного ответа
-        if (allQuestions[currentQuestionId].answered) {
-            addAnswerClass_Type7(targetPoint, index);
-        }
+        
 
         // Нижний Контент (может быть из rightContents или другой логики)
         let bottomContent = question.rightContents[index];
         if (bottomContent) {
             let bottomContentContainer = createContentElement_Type7(bottomContent, 'bottom', index, questionId);
+
+            // Добавляем классы правильного или неправильного ответа
+            if (allQuestions[currentQuestionId].answered) {
+                addAnswerClass_Type7(bottomContentContainer, index);
+            }
+
             column.appendChild(bottomContentContainer);
         }
+
+
 
         // Добавляем колонку в контейнер интерактивной области
         mappingContainer.appendChild(column);
@@ -1506,6 +1511,7 @@ function createContentElement_Type7(content, position, index, questionId) {
 
     let contentEl;
     let contentIsNeedLoupe = false;
+    let loupeClasses = "resize_btn_type_6"
 
     if (content.type === 'text') {
         contentEl = document.createElement("div");
@@ -1513,7 +1519,8 @@ function createContentElement_Type7(content, position, index, questionId) {
         contentEl.classList.add('question_type_7_text_content');
         // Если текст длинный, добавляем кнопку лупы
         if (content.value.length > 70) {
-            contentIsNeedLoupe = true;
+            contentIsNeedLoupe = true
+            loupeClasses = loupeClasses + " resize_btn_type_6_text"
         }
     } else if (content.type === 'image') {
         contentEl = document.createElement("img");
@@ -1533,29 +1540,14 @@ function createContentElement_Type7(content, position, index, questionId) {
     contentContainer.appendChild(contentEl);
 
     // Добавляем кнопку лупы, если необходимо
-    if (contentIsNeedLoupe) {
-        let loupeBtn = document.createElement("div");
-        loupeBtn.classList.add("resize_btn_type_7");
-        contentContainer.appendChild(loupeBtn);
-
-        // Добавляем обработчик события для открытия лупы
-        loupeBtn.addEventListener("click", () => {
-            if (content.type === 'text') {
-                openLoupe(content.value, 'text');
-            } else if (content.type === 'image') {
-                openLoupe(contentEl.src, 'image');
-            } else if (content.type === 'video') {
-                openLoupe(contentEl.src, 'video');
-            }
-        });
-    }
+    if (contentIsNeedLoupe) contentContainer.appendChild(createLoupe(loupeClasses));
 
     return contentContainer;
 }
 
 function createSVG_Type7(itemCount, userAnswers) {
     // Создаем глобальный SVG
-    var globalDraw = SVG().addTo('.question_type_7_mapping').size('100%', '100%').attr({ style: 'position: absolute; top: 0; left: 0; z-index: 1000;' });
+    var globalDraw = SVG().addTo('.question_type_7_mapping').size('100%', '100%').attr({ style: 'position: absolute; top: 0; left: 0; z-index: 10;' });
 
     // Инициализируем объект данных
     var type7Data = {

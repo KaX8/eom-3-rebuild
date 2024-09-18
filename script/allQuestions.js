@@ -98,7 +98,7 @@ let allQuestions = [
         type: 6,
         text: "Соедините соответствующие элементы",
         leftContents: [
-            { type: 'text', value: 'Текст слева 1' },
+            { type: 'text', value: 'Текст слева 1das ads ads asd asd d asd sdadasd asdasa sdasd asdasd asdasdad asad asdasd' },
             { type: 'image' }, 
             { type: 'video' }, 
             { type: 'text', value: 'Текст слева 4' }
@@ -119,14 +119,14 @@ let allQuestions = [
         type: 7,
         text: "Соедините соответствующие элементы",
         leftContents: [
-            { type: 'text', value: 'Текст слева 1' },
+            { type: 'text', value: 'Текст слева 1das ads ads asd asd d asd sdadasd asdasa sdasd asdasd asdasdad asad asdasd ф ывфыв фыв фыв фыв фыв конец' },
             { type: 'image' }, 
             { type: 'video' }, 
             { type: 'text', value: 'Текст слева 4' }
         ],
         rightContents: [
             { type: 'image' }, 
-            { type: 'text', value: 'Текст справа 2' },
+            { type: 'text', value: 'Текст слева 1das ads ads asd asd d asd sdadasd asdasa sdasd asdasd asdasdad asad asdasd вфыфыв фыв фыв фыв фыв фыв фыв фыв фыв фыв фыв конец' },
             { type: 'text', value: 'Текст справа 3' },
             { type: 'video' } 
         ],

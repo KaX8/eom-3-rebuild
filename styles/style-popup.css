@@ -969,19 +969,17 @@ input[type='checkbox']:checked {
 
 .question_type_6_content_container img,
 .question_type_6_content_container video {
-    border: solid;
+/*    border: solid;*/
 }
 
 .question_type_6_content_container img {
     object-fit: contain;
-    border-radius: inherit;
     width: inherit;
     height: inherit;
 }
 
 .question_type_6_content_container video {
     object-fit: contain;
-    border-radius: inherit;
     width: inherit;
     height: inherit;
 }
@@ -1005,11 +1003,11 @@ input[type='checkbox']:checked {
 }
 
 .correct-answer {
-    background-color: #69b51a !important; /* Зелёный цвет */
+    border: 6px solid #36b790 !important;
 }
 
 .wrong-answer {
-    background-color: #b51a1a !important; /* Красный цвет */
+    border: 6px solid #fd5052 !important;
 }
 
 /* Левый контент */
@@ -1026,16 +1024,15 @@ input[type='checkbox']:checked {
 }
 
 .question_type_6_left_content_image {
-    border: 2px solid #025EA1;
-    padding: 5px;
-    background-color: white !important;
+
+}
+
+.question_type_6_left_content_image img {
+    
 
 }
 
 .question_type_6_left_content_video {
-    border: 2px solid #025EA1;
-    padding: 5px;
-    background-color: white !important;
 
 }
 
@@ -1043,7 +1040,7 @@ input[type='checkbox']:checked {
 .question_type_6_right_content_text {
     background-color: white !important;
     color: black !important;
-    border: solid 2px #025EA1;
+    border: solid 3px #025EA1;
     padding: 10px;
     min-width: 150px !important;
     max-width: 300px !important;
@@ -1054,19 +1051,17 @@ input[type='checkbox']:checked {
 }
 
 .question_type_6_right_content_image {
-    border: 2px solid #025EA1;
-    padding: 5px;
+    border: 3px solid #025EA1;
     background-color: white !important;
 }
 
 .question_type_6_right_content_video {
-    border: 2px solid #025EA1;
-    padding: 5px;
+    border: 3px solid #025EA1;
     background-color: white !important;
 }
 
 .resize_btn_type_6{
-/*    z-index: 1000;*/
+    z-index: 1000;
     right: 0%;
 }
 
@@ -1182,13 +1177,12 @@ input[type='checkbox']:checked {
 
 .question_type_7_body .question_type_7_content_container img,
 .question_type_7_body .question_type_7_content_container video {
-    object-fit: contain;
-    border-radius: inherit;
+    object-fit: cover;
     width: 100%;
     height: 100%;
 }
 
-.question_type_7_body .question_type_7_text_content {
+.question_type_7_text_content {
     font-size: 1vw;
     text-align: center;
     word-wrap: break-word;
@@ -1212,21 +1206,7 @@ input[type='checkbox']:checked {
     flex-shrink: 0; /* Предотвращает сжатие кругов */
 }
 
-/* Кнопка лупы для типа 7 */
-.question_type_7_body .resize_btn_type_7 {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background-image: url("../content/loupe.png");
-    background-size: contain;
-    background-color: rgba(171, 219, 243, 0.4);
-    border-radius: 50%;
-    top: 5px; 
-    right: 5px; 
-    z-index: 10;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
+
 
 .question_type_7_body .resize_btn_type_7:hover {
     background-color: rgba(93, 194, 245, 0.6);
@@ -1234,7 +1214,13 @@ input[type='checkbox']:checked {
 
 /* Дополнительные стили для обеспечения стабильного выравнивания */
 .question_type_7_body .question_type_7_content_container {
-    flex: 0 0 150px; /* Фиксированная ширина и высота */
+/*    flex: 0 0 150px;*/
+}
+
+.question_type_7_top_content{
+    background-color: white !important;
+    color: black !important;
+    border: 3px solid #025EA1;
 }
 
 
