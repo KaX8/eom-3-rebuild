@@ -240,7 +240,6 @@ function createBodyPopUp_Type0(question){
     return el;
 }
 function createAnswer_Type0(question, i){
-    
     let el = document.createElement("div");
     el.setAttribute("id", `question_type_0_answer_${i}`)
     let elChB = document.createElement("input");
@@ -248,11 +247,30 @@ function createAnswer_Type0(question, i){
     elChB.setAttribute("name", "answ");
     elChB.setAttribute("value", `${i}`);
     el.appendChild(elChB);
-    let elChD = document.createElement("p");
-    elChD.setAttribute("id", `question_type_0_answer_text_${i}`);
-    let elChDChA = document.createTextNode(question.answers[i]);
-    elChD.appendChild(elChDChA);
-    el.appendChild(elChD);
+
+    // Проверяем, содержит ли вариант ответа расширение изображения
+    let answerText = question.answers[i];
+    if (answerText.includes('.png') || answerText.includes('.jpg') || answerText.includes('.jpeg')) {
+        // Создаем элемент изображения
+        let divImg = document.createElement("div");
+        divImg.setAttribute("class", `question_type_0_answer_img`)
+
+        let img = document.createElement("img");
+        img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}/${answerText}`);
+        img.setAttribute("alt", `Answer Image ${i}`);
+        divImg.appendChild(img);
+
+        // Добавляем кнопку увеличения изображения
+        divImg.appendChild(createLoupe("resize_btn_type_0_answer"));
+        el.appendChild(divImg)
+    } else {
+        // Создаем текстовый элемент
+        let elChD = document.createElement("p");
+        elChD.setAttribute("id", `question_type_0_answer_text_${i}`);
+        let elChDChA = document.createTextNode(question.answers[i]);
+        elChD.appendChild(elChDChA);
+        el.appendChild(elChD);
+    }
 
     if (questionIsPassed(question)){
         elChB.setAttribute("class", "disabled_input");
