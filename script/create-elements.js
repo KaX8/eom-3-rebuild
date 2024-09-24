@@ -239,8 +239,7 @@ function createBodyPopUp_Type0(question){
 
     return el;
 }
-function createAnswer_Type0(question, i){
-    let el = document.createElement("div");
+function createAnswer_Type0(question, i){ let el = document.createElement("div");
     el.setAttribute("id", `question_type_0_answer_${i}`)
     let elChB = document.createElement("input");
     elChB.setAttribute("type", "radio");
@@ -248,12 +247,12 @@ function createAnswer_Type0(question, i){
     elChB.setAttribute("value", `${i}`);
     el.appendChild(elChB);
 
-    // Проверяем, содержит ли вариант ответа расширение изображения
+    // Проверяем, содержит ли вариант ответа расширение изображения или видео
     let answerText = question.answers[i];
     if (answerText.includes('.png') || answerText.includes('.jpg') || answerText.includes('.jpeg')) {
         // Создаем элемент изображения
         let divImg = document.createElement("div");
-        divImg.setAttribute("class", `question_type_0_answer_img`)
+        divImg.setAttribute("class", `question_type_0_answer_img`);
 
         let img = document.createElement("img");
         img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}/${answerText}`);
@@ -262,7 +261,28 @@ function createAnswer_Type0(question, i){
 
         // Добавляем кнопку увеличения изображения
         divImg.appendChild(createLoupe("resize_btn_type_0_answer"));
-        el.appendChild(divImg)
+        el.appendChild(divImg);
+    } else if (answerText.includes('.mp4') || answerText.includes('.webm') || answerText.includes('.ogg')) {
+        // Создаем элемент видео
+        let divVideo = document.createElement("div");
+        divVideo.setAttribute("class", `question_type_0_answer_vid`);
+
+        let video = document.createElement("video");
+        video.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}/${answerText}`);
+        video.setAttribute("muted", "true"); // Отключаем звук
+        video.setAttribute("playsinline", "true"); // Для iOS, чтобы предотвратить полноэкранное воспроизведение
+        video.setAttribute("disablePictureInPicture", "true"); // Отключаем PIP
+
+        // Отключаем элементы управления и воспроизведение
+        video.controls = false;
+        video.preload = "metadata"; // Загружаем только метаданные
+        video.style.pointerEvents = "none"; // Отключаем возможность взаимодействия с видео
+
+        divVideo.appendChild(video);
+
+        // Добавляем кнопку увеличения видео
+        divVideo.appendChild(createLoupe("resize_btn_type_0_answer"));
+        el.appendChild(divVideo);
     } else {
         // Создаем текстовый элемент
         let elChD = document.createElement("p");
@@ -278,10 +298,12 @@ function createAnswer_Type0(question, i){
             elChB.checked = true;
 
             if (question.correctAnswer.includes(i)){
-                el.style = "background-color: #bdffbd;";
-            }else el.style = "background-color: #ffb9b9;";
+                el.style = "--bg-color: var(--correct-bg-color);";
+            } else {
+                el.style = "--bg-color: var(--incorrect-bg-color);";
+            }
         }
-    }else{
+    } else {
         el.addEventListener('click', () => {
             elChB.checked = !elChB.checked;
         });
@@ -289,8 +311,7 @@ function createAnswer_Type0(question, i){
     
     return el;
 }
-function createAnswers_Type0(question){
-    let el = document.createElement("div");
+function createAnswers_Type0(question){ let el = document.createElement("div");
     el.setAttribute("class", "question_type_0_answers");
     el.setAttribute("id", "question_type_0_answers");
 
@@ -300,26 +321,27 @@ function createAnswers_Type0(question){
 
     return el;
 }
-function createImgDiv_Type0(question){
-    let el = document.createElement("div");
+function createImgDiv_Type0(question){ let el = document.createElement("div");
+    let id = allQuestions.indexOf(question)
     el.setAttribute("class", "question_type_0_img");
     el.setAttribute("id", "question_type_0_img");
     
     let img = document.createElement("img");
-    img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.png`);
+    img.setAttribute("src", `${imgPath}/${id}/${id}.png`);
     el.appendChild(img);
 
     el.appendChild(createLoupe())
 
     return el;
 }
-function createVidDiv_Type0(question){
+function createVidDiv_Type0(question){ 
+    let id = allQuestions.indexOf(question)
     let el = document.createElement("div");
     el.setAttribute("class", "question_type_0_vid");
     el.setAttribute("id", "question_type_0_img");
     
     let img = document.createElement("video");
-    img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.mp4`);
+    img.setAttribute("src", `${imgPath}/${id}/${id}.mp4`);
     img.setAttribute("controls", `true`);
     el.appendChild(img);
 
@@ -327,6 +349,7 @@ function createVidDiv_Type0(question){
 
     return el;
 }
+
 
 function createBodyPopUp_Type1(question){
     let el = document.createElement("div");
@@ -336,47 +359,89 @@ function createBodyPopUp_Type1(question){
     elChB.setAttribute("style", "width: 100%;");
     let elChBChB = document.createElement("div");
     elChBChB.setAttribute("class", "question_type_1_radio");
-    elChB.appendChild(elChBChB);
-    el.appendChild(elChB);
+
+    if (question.image) elChBChB.appendChild(createImgDiv_Type1(question));
+    else if (question.video) elChBChB.appendChild(createVidDiv_Type1(question));
 
     elChBChB.appendChild(createAnswers_Type1(question));
+    elChB.appendChild(elChBChB);
+    el.appendChild(elChB);
 
     if (!questionIsPassed(question)) elChB.appendChild(createBottomPopUp(question));
 
     return el;
 }
-function createAnswer_Type1(question, i){
+function createAnswer_Type1(question, i){ 
     let el = document.createElement("div");
     el.setAttribute("id", `question_type_1_answer_${i}`);
     let elChB = document.createElement("input");
     elChB.setAttribute("type", "checkbox");
     elChB.setAttribute("value", `${i}`);
     el.appendChild(elChB);
-    let elChD = document.createElement("p");
-    elChD.setAttribute("id", `question_type_1_answer_text_${i}`);
-    let elChDChA = document.createTextNode(`${question.answers[i]}`);
-    elChD.appendChild(elChDChA);
-    el.appendChild(elChD);
 
-    if (questionIsPassed(question)){
+    let answerText = question.answers[i];
+    if (answerText.includes('.png') || answerText.includes('.jpg') || answerText.includes('.jpeg')) {
+        let divImg = document.createElement("div");
+        divImg.setAttribute("class", `question_type_1_answer_img`);
+
+        let img = document.createElement("img");
+        img.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}/${answerText}`);
+        img.setAttribute("alt", `Answer Image ${i}`);
+        divImg.appendChild(img);
+
+        divImg.appendChild(createLoupe("resize_btn_type_1_answer"));
+        el.appendChild(divImg);
+    } else if (answerText.includes('.mp4') || answerText.includes('.webm') || answerText.includes('.ogg')) {
+        let divVideo = document.createElement("div");
+        divVideo.setAttribute("class", `question_type_1_answer_vid`);
+
+        let video = document.createElement("video");
+        video.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}/${answerText}`);
+        video.setAttribute("muted", "true");
+        video.setAttribute("playsinline", "true");
+        video.setAttribute("disablePictureInPicture", "true");
+
+        video.controls = false;
+        video.preload = "metadata";
+        video.style.pointerEvents = "none";
+
+        divVideo.appendChild(video);
+        divVideo.appendChild(createLoupe("resize_btn_type_1_answer"));
+        el.appendChild(divVideo);
+    } else {
+        let elChD = document.createElement("div");
+        elChD.setAttribute("id", `question_type_1_answer_text_${i}`);
+        elChD.setAttribute("class", `question_type_1_answer_text`);
+        let elChDChA = document.createTextNode(`${question.answers[i]}`);
+        elChD.appendChild(elChDChA);
+        el.appendChild(elChD);
+
+        if (answerText.length > 60) el.appendChild(createLoupe("resize_btn_type_1_answer"));
+    }
+
+    if (question.answered){
         elChB.setAttribute("class", "disabled_input");
         if(question.answered.includes(i, 0)) {
             elChB.checked = true;
 
             if (question.correctAnswer.includes(i)){
-                el.style = "background-color: #bdffbd;";
-            }else el.style = "background-color: #ffb9b9;";
+                el.style = "--bg-color: var(--correct-bg-color);";
+            } else {
+                el.style = "--bg-color: var(--incorrect-bg-color);";
+            }
         }
-    }else{
+
+        
+    } else {
         el.addEventListener('click', () => {
-            console.log("click!");
             elChB.checked = !elChB.checked;
+            console.log('click')
         });
     }
 
     return el;
 }
-function createAnswers_Type1(question){
+function createAnswers_Type1(question){ 
     let el = document.createElement("div");
     el.setAttribute("class", "question_type_1_answers");
     el.setAttribute("id", "question_type_1_answers");
@@ -387,6 +452,36 @@ function createAnswers_Type1(question){
 
     return el;
 }
+function createImgDiv_Type1(question){
+    let id = allQuestions.indexOf(question)
+    let el = document.createElement("div");
+    el.setAttribute("class", "question_type_1_img");
+    el.setAttribute("id", "question_type_1_img");
+    
+    let img = document.createElement("img");
+    img.setAttribute("src", `${imgPath}/${id}/${id}.png`);
+    el.appendChild(img);
+
+    el.appendChild(createLoupe());
+
+    return el;
+}
+function createVidDiv_Type1(question){ 
+    let id = allQuestions.indexOf(question);
+    let el = document.createElement("div");
+    el.setAttribute("class", "question_type_1_vid");
+    el.setAttribute("id", "question_type_1_vid");
+    
+    let video = document.createElement("video");
+    video.setAttribute("src", `${imgPath}/${id}/${id}.mp4`);
+    video.setAttribute("controls", `true`);
+    el.appendChild(video);
+
+    el.appendChild(createLoupe());
+
+    return el;
+}
+
 
 function createBodyPopUp_Type2(question){
     let el = document.createElement("div");
