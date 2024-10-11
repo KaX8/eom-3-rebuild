@@ -301,10 +301,11 @@ body{
 .question_type_1_radio{
     display: flex;
     flex-direction: row;
-    justify-content: start;
-/*    width: 100%;*/
+    justify-content: center;
+    width: 100%;
     padding: 2vw;
     align-items: center;
+
 }
 
 .question_type_1_img, .question_type_1_vid{
@@ -313,6 +314,7 @@ body{
     align-self: center;
     overflow: hidden;
     position: relative;
+    width: 40%;
 }
 
 .question_type_1_img img, .question_type_1_vid video{
@@ -339,7 +341,7 @@ body{
 .question_type_1_answers{
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
+    width: 45%;
     height: 100%;
     flex-direction: row;
 }
