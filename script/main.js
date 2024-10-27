@@ -121,16 +121,31 @@ function getUserAnswers(el){
         console.log(arr);
 
     }else if (currentQuestionType == 2){
+        let userAnswers = [];
+        let textAndPlaceholders = allQuestions[currentQuestionId].textDd.split(/(\||!)/);
 
-        for (el of el.target.getElementsByClassName("custom-dropdown-input-placeholder")) 
-            textAnsw.push(el.innerHTML);
+        let dropdownIndex = 0;
+        let placeholderIndex = 0;
 
-        for (let i = 0; i < trueAnsw.length; i++){
-            for (let j = 0; j < trueAnsw[i].length; j++){
-                if (textAnsw[i] == trueAnsw[i][j]) arr.push(j);
+        for (let i = 0; i < textAndPlaceholders.length; i++) {
+            if (textAndPlaceholders[i] === '|' || textAndPlaceholders[i] === '!') {
+                if (textAndPlaceholders[i] === '|') {
+                    let placeholder = document.getElementById(`question_type_2_answer_${dropdownIndex}`).querySelector('.custom-dropdown-input-placeholder');
+                    let selectedText = placeholder.innerHTML;
+                    if (selectedText == "Выберите ответ") {
+                        userAnswers[placeholderIndex] = -1;
+                    } else {
+                        userAnswers[placeholderIndex] = allQuestions[currentQuestionId].answers[dropdownIndex].indexOf(selectedText);
+                    }
+                    dropdownIndex++;
+                } else if (textAndPlaceholders[i] === '!') {
+                    let inputField = document.getElementById(`question_type_2_input_${placeholderIndex}`).querySelector('input');
+                    userAnswers[placeholderIndex] = inputField.value.trim().toLowerCase();
+                }
+                placeholderIndex++;
             }
         }
-        
+        arr = userAnswers;
     }else if (currentQuestionType == 6) {
         let circleOccupancy = window.type6Data.circleOccupancy;
         for (let i = 0; i < Object.keys(circleOccupancy).length; i++) {
@@ -168,9 +183,18 @@ function userHasAnswers(answers){
 
     if (currentQuestionType == 0 || currentQuestionType == 1 ) {
         return answers.length > 0;
-    }else if (currentQuestionType == 2 || currentQuestionType == 3 ||currentQuestionType == 5 ){
+    }else if (currentQuestionType == 3 ||currentQuestionType == 5 ){
         return allQuestions[currentQuestionId].correctAnswer.length === answers.length;
-    }else if(currentQuestionType == 4){
+    }else if(currentQuestionType == 2){
+        // Проверяем, что все ответы заполнены
+        for (let i = 0; i < answers.length; i++) {
+            if (answers[i] === -1 || answers[i] === "" || answers[i] === null || answers[i] === undefined) {
+                return false;
+            }
+        }
+        return true;
+    }
+    else if(currentQuestionType == 4){
         let sumOfCorrect = 0;
         let sumOfUsers = 0;
         for (let i = 0; i < allQuestions[currentQuestionId].correctAnswer.length; i++)
@@ -217,13 +241,35 @@ function showErrors(e){
     if (currentQuestionType == 0 || currentQuestionType == 1 ) {
         for (let i = 0; i < allQuestions[currentQuestionId].answers.length; i++)
                 elToErrors.push(document.getElementById(`question_type_${currentQuestionType}_answer_${i}`));
-    }else if (currentQuestionType == 2 || currentQuestionType == 5){
+    }else if (currentQuestionType == 5){
         for (let i = 0; i < allQuestions[currentQuestionId].answers.length; i++){
             txtAnswer = document.getElementById(`question_type_${currentQuestionType}_answer_${i}`).childNodes[0].innerHTML
             if (txtAnswer == "Выберите ответ")
                 elToErrors.push(document.getElementById(`question_type_${currentQuestionType}_answer_${i}`));
         }
-    } else if(currentQuestionType == 3){
+    } else if (currentQuestionType == 2) {
+        let textAndPlaceholders = allQuestions[currentQuestionId].textDd.split(/(\||!)/);
+        let dropdownIndex = 0;
+        let placeholderIndex = 0;
+
+        for (let i = 0; i < textAndPlaceholders.length; i++) {
+            if (textAndPlaceholders[i] === '|' || textAndPlaceholders[i] === '!') {
+                if (textAndPlaceholders[i] === '|') {
+                    let placeholder = document.getElementById(`question_type_2_answer_${dropdownIndex}`).querySelector('.custom-dropdown-input-placeholder');
+                    if (placeholder.innerHTML == "Выберите ответ") {
+                        elToErrors.push(document.getElementById(`question_type_2_answer_${dropdownIndex}`));
+                    }
+                    dropdownIndex++;
+                } else if (textAndPlaceholders[i] === '!') {
+                    let inputField = document.getElementById(`question_type_2_input_${placeholderIndex}`).querySelector('input');
+                    if (inputField.value.trim() === "") {
+                        elToErrors.push(document.getElementById(`question_type_2_input_${placeholderIndex}`));
+                    }
+                }
+                placeholderIndex++;
+            }
+        }
+    }else if(currentQuestionType == 3){
         let dragZones = e.target.getElementsByClassName(`question_type_${currentQuestionType}_answer_drop_zone`);
         for (el of dragZones) {
             if (el.children.length == 0) elToErrors.push(el);
@@ -368,6 +414,8 @@ function userAnswersHandler(userAnswers){
 
 // Функция, возвращающее, верный ли был ответ
 function answerIsCorrect(question, userAnswers){
+    console.log(question)
+    console.log(userAnswers)
     corrects = question.correctAnswer;
     userAnswers = userAnswers;
     if (currentQuestionType == 4){

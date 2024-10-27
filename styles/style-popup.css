@@ -1344,5 +1344,18 @@ input[type='checkbox']:checked {
     border: 3px solid #025EA1;
 }
 
+.custom-input-keyboard{
+
+}
+
+.custom-input-keyboard input[type=text]{
+    text-align: center;
+    font-size: 15px;
+    border-radius: 1vh;
+    border: 0.1vw solid #000;
+    padding: 5% 2%;
+    min-width: 22vh;
+}
+
 
 

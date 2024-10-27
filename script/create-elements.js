@@ -33,9 +33,25 @@ function createQuestionButton(id){
     let question = document.createElement("div")
     question.setAttribute("class", `question id${id}`)
     let btn = document.createElement("button")
-    let btn_text = document.createTextNode(id+1)
 
-    btn.appendChild(btn_text)
+    let price = allQuestions[id].price
+
+    switch (price){
+        case 150:
+            btn.setAttribute('style', 'background-color: #3CBA94; color: #F8F8FA;')
+            break
+        case 200:
+            btn.setAttribute('style', 'background-color: #346689; color: #F8F8FA;')
+            break
+        case 250:
+            btn.setAttribute('style', 'background-color:  #025EA1; color: #F8F8FA;')
+            break
+        case 300:
+            btn.setAttribute('style', 'background-color: #283995; color: #F8F8FA;')
+            break
+    }
+
+    btn.appendChild(document.createTextNode(price))
     question.appendChild(btn)
 
     return question
@@ -497,14 +513,28 @@ function createBodyPopUp_Type2(question){
     let elChBChBChBChB = document.createElement("div");
     elChBChBChBChB.setAttribute("class", "place_of_custom_dropdown");
 
-    let text = question.textDd.split('|');
-    createDivsForText(text[0], elChBChBChBChB);
+    // Разбиваем текст по плейсхолдерам '|' и '!'
+    let textAndPlaceholders = question.textDd.split(/(\||!)/);
 
-    for (let i = 0; i < question.answers.length; i++) {
-        elChBChBChBChB.appendChild(createDropdown_Type2(question, i));
-        createDivsForText(text[i+1], elChBChBChBChB);
+    let dropdownIndex = 0;    // Индекс для выпадающих списков в answers
+    let placeholderIndex = 0; // Общий индекс плейсхолдеров
+
+    for (let i = 0; i < textAndPlaceholders.length; i++) {
+        if (textAndPlaceholders[i] === '|' || textAndPlaceholders[i] === '!') {
+            if (textAndPlaceholders[i] === '|') {
+                // Передаем оба индекса
+                elChBChBChBChB.appendChild(createDropdown_Type2(question, dropdownIndex, placeholderIndex));
+                dropdownIndex++;
+            } else if (textAndPlaceholders[i] === '!') {
+                // Передаем placeholderIndex
+                elChBChBChBChB.appendChild(createInputField_Type2(question, placeholderIndex));
+            }
+            placeholderIndex++;
+        } else {
+            // Это текст между плейсхолдерами
+            createDivsForText(textAndPlaceholders[i], elChBChBChBChB);
+        }
     }
-    
 
     elChBChBChB.appendChild(elChBChBChBChB);
     elChBChB.appendChild(elChBChBChB);
@@ -524,25 +554,30 @@ function createDivsForText(text, target) {
         target.appendChild(div);
     }
 }
-function createDropdown_Type2(question, i){
+function createDropdown_Type2(question, dropdownIndex, placeholderIndex){
     let passed = questionIsPassed(question);
     let el = document.createElement("div");
     el.setAttribute("class", "custom-dropdown");
     let elChB = document.createElement("div");
     elChB.setAttribute("class", "custom-dropdown-input");
-    elChB.setAttribute("id", `question_type_2_answer_${i}`);
+    elChB.setAttribute("id", `question_type_2_answer_${dropdownIndex}`);
     let elChBChB = document.createElement("div");
     elChBChB.setAttribute("class", "custom-dropdown-input-placeholder");
 
-    let elChBChBChA = ":)";
+    let elChBChBChA;
     if (!passed){
         elChBChBChA = document.createTextNode("Выберите ответ");
-    }else{
-        elChBChBChA = document.createTextNode(`${question.answers[i][question.answered[i]]}`);
-        
-        if (question.correctAnswer[i] == question.answered[i]){
-            elChB.style = "background-color: #bdffbd;";
-        }else elChB.style = "background-color: #ffb9b9;";
+    } else {
+        // Используем placeholderIndex для доступа к answered и correctAnswer
+        let userAnswerIndex = question.answered[placeholderIndex];
+        let correctAnswerIndex = question.correctAnswer[placeholderIndex];
+        elChBChBChA = document.createTextNode(`${question.answers[dropdownIndex][userAnswerIndex]}`);
+
+        if (correctAnswerIndex == userAnswerIndex){
+            elChB.style.backgroundColor = "#bdffbd"; // Правильный
+        } else {
+            elChB.style.backgroundColor = "#ffb9b9"; // Неправильный
+        }
     }
 
     elChBChB.appendChild(elChBChBChA);
@@ -561,12 +596,13 @@ function createDropdown_Type2(question, i){
 
     let elChD = document.createElement("div");
     elChD.setAttribute("class", "custom-dropdown-select closed");
-    elChD.setAttribute("id", `custom-dropdown-select-${i}`);
+    elChD.setAttribute("id", `custom-dropdown-select-${placeholderIndex}`);
 
     if (!passed){
 
-        for (let j = 0; j < question.answers[i].length; j++) {
-            elChD.appendChild(createDropdownSelect_Type2(question.answers[i], j));
+        // Используем dropdownIndex для доступа к question.answers
+        for (let j = 0; j < question.answers[dropdownIndex].length; j++) {
+            elChD.appendChild(createDropdownSelect_Type2(question.answers[dropdownIndex], j));
         }
 
         el.addEventListener('click', function(e){
@@ -574,7 +610,7 @@ function createDropdown_Type2(question, i){
         });
 
         elChD.addEventListener('mouseup', function(e){
-            text = e.target.innerHTML;
+            let text = e.target.innerHTML;
             elChBChB.innerHTML = text;
         });
 
@@ -584,12 +620,40 @@ function createDropdown_Type2(question, i){
 
     return el;
 }
+
 function createDropdownSelect_Type2(answers, j){
     let elChDChB = document.createElement("div");
     let elChDChBChA = document.createTextNode(`${answers[j]}`);
     elChDChB.appendChild(elChDChBChA);
     return elChDChB;
 }
+function createInputField_Type2(question, index) {
+    let passed = questionIsPassed(question);
+    let el = document.createElement("div");
+    el.setAttribute("class", "custom-input-keyboard");
+    el.setAttribute("id", `question_type_2_input_${index}`);
+
+    let input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("placeholder", "Введите ответ");
+
+    if (passed) {
+        input.value = question.answered[index];
+        input.disabled = true;
+        // Применяем стили в зависимости от правильности ответа
+        if (question.correctAnswer[index].trim().toLowerCase() === input.value.trim().toLowerCase()) {
+            input.style.backgroundColor = "#bdffbd"; // Правильный
+        } else {
+            input.style.backgroundColor = "#ffb9b9"; // Неправильный
+        }
+    }
+
+    el.appendChild(input);
+    return el;
+}
+
+
+
 
 function createBodyPopUp_Type3(question){
     let el = document.createElement("div");
