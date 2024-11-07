@@ -506,42 +506,60 @@ function createBodyPopUp_Type2(question){
     let elChB = document.createElement("form");
     elChB.setAttribute("style", "width: 100%;");
     let elChBChB = document.createElement("div");
-    elChBChB.setAttribute("class", "question_type_2_dropdown");
-    let elChBChBChB = document.createElement("div");
-    elChBChBChB.setAttribute("class", "question_type_2_answers");
-    elChBChBChB.setAttribute("id", "question_type_2_answers");
-    let elChBChBChBChB = document.createElement("div");
-    elChBChBChBChB.setAttribute("class", "place_of_custom_dropdown");
+    elChBChB.setAttribute("class", "question_type_2_content");
 
-    // Разбиваем текст по плейсхолдерам '|' и '!'
+    // Check and append image or video
+    if (question.image) elChBChB.appendChild(createImgDiv_Type2(question));
+
+    // Create the answers section
+    let answersDiv = document.createElement("div");
+    answersDiv.setAttribute("class", "question_type_2_answers");
+    answersDiv.setAttribute("id", "question_type_2_answers");
+
+    let answersContent = document.createElement("div");
+    answersContent.setAttribute("class", "place_of_custom_dropdown");
+
+    // Split text into placeholders and create corresponding elements
     let textAndPlaceholders = question.textDd.split(/(\||!)/);
 
-    let dropdownIndex = 0;    // Индекс для выпадающих списков в answers
-    let placeholderIndex = 0; // Общий индекс плейсхолдеров
+    let dropdownIndex = 0;
+    let placeholderIndex = 0;
 
     for (let i = 0; i < textAndPlaceholders.length; i++) {
         if (textAndPlaceholders[i] === '|' || textAndPlaceholders[i] === '!') {
             if (textAndPlaceholders[i] === '|') {
-                // Передаем оба индекса
-                elChBChBChBChB.appendChild(createDropdown_Type2(question, dropdownIndex, placeholderIndex));
+                answersContent.appendChild(createDropdown_Type2(question, dropdownIndex, placeholderIndex));
                 dropdownIndex++;
             } else if (textAndPlaceholders[i] === '!') {
-                // Передаем placeholderIndex
-                elChBChBChBChB.appendChild(createInputField_Type2(question, placeholderIndex));
+                answersContent.appendChild(createInputField_Type2(question, placeholderIndex));
             }
             placeholderIndex++;
         } else {
-            // Это текст между плейсхолдерами
-            createDivsForText(textAndPlaceholders[i], elChBChBChBChB);
+            createDivsForText(textAndPlaceholders[i], answersContent);
         }
     }
 
-    elChBChBChB.appendChild(elChBChBChBChB);
-    elChBChB.appendChild(elChBChBChB);
+    answersDiv.appendChild(answersContent);
+    elChBChB.appendChild(answersDiv);
+
     elChB.appendChild(elChBChB);
     el.appendChild(elChB);
 
     if (!questionIsPassed(question)) elChB.appendChild(createBottomPopUp(question));
+
+    return el;
+}
+function createImgDiv_Type2(question){ 
+    let id = allQuestions.indexOf(question);
+    let el = document.createElement("div");
+    el.setAttribute("class", "question_type_2_img");
+    el.setAttribute("id", "question_type_2_img");
+    
+    let img = document.createElement("img");
+    img.setAttribute("src", `${imgPath}/${id}.png`);
+    el.appendChild(img);
+
+    el.appendChild(createLoupe());
 
     return el;
 }
