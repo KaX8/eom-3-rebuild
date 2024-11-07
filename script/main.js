@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
     // Генерируем объекты кнопок, для вопросов
+    rearrangeAllQuestions()
     // Количество кнопок определяется количеством вопросов в allQuestions.js
     generateQuestionButtons()
 
@@ -60,6 +61,25 @@ document.addEventListener('DOMContentLoaded', function(){
     
     
 });
+
+function rearrangeAllQuestions() {
+    if (allQuestions.length === 15) {
+        let rearranged = [];
+        let step = 3; // Шаг между элементами
+        let startIndices = [0, 1, 2]; // Начальные индексы для каждого подмассива
+
+        for (let i = 0; i < startIndices.length; i++) {
+            let currentIndex = startIndices[i];
+            while (currentIndex < allQuestions.length) {
+                rearranged.push(allQuestions[currentIndex]);
+                currentIndex += step;
+            }
+        }
+        allQuestions = rearranged;
+    }
+}
+
+
 
 function generateQuestionButtons() {
     boxes_counter = Math.ceil(allQuestions.length/5)
