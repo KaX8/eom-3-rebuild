@@ -34,6 +34,13 @@ document.addEventListener('DOMContentLoaded', function(){
     // Сообщение о загрузке скрипта
     console.log('Script is loaded');
 
+    // Меняем текст темы в названии; на странице
+    themeObjs = document.getElementsByClassName('theme')
+    Array.prototype.forEach.call(themeObjs, el => {
+      el.innerHTML = themeName
+    });
+
+
     // Генерируем объекты кнопок, для вопросов
     // Количество кнопок определяется количеством вопросов в allQuestions.js
     generateQuestionButtons()

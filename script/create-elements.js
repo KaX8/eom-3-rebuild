@@ -58,7 +58,7 @@ function createQuestionButton(id){
 }
 
 function createPopUpMain(question){
-    if (question.image || question.video) imgPath = `content/quiz-images/type${question.type}`; 
+    imgPath = `content/quiz-media/type${question.type}`; 
 
     let el = document.createElement("div");
     el.setAttribute("class", "popup_main");
@@ -1315,14 +1315,14 @@ function createContentElement_Type6(content, side, index, questionId) {
         contentEl = document.createElement("div");
         contentEl.innerText = content.value;
         contentEl.classList.add('question_type_6_text_content');
-        if (content.value.length > 70) {
+        if (content.value.length > 20) {
             contentIsNeedLoupe = true
             loupeClasses = loupeClasses + " resize_btn_type_6_text"
         }
 
     } else if (content.type === 'image') {
         contentEl = document.createElement("img");
-        let imgSrc = `content/quiz-images/type6/img/${questionId}-${side === 'left' ? '0' : '1'}-${index}.png`;
+        let imgSrc = `content/quiz-media/type6/img/${questionId}-${side === 'left' ? '0' : '1'}-${index}.png`;
         contentEl.setAttribute("src", imgSrc);
         contentEl.setAttribute("alt", "image content");
         contentEl.classList.add('image-content');
@@ -1330,7 +1330,7 @@ function createContentElement_Type6(content, side, index, questionId) {
     } else if (content.type === 'video') {
         contentEl = document.createElement("video");
         
-        let vidSrc = `content/quiz-images/type6/vid/${questionId}-${side === 'left' ? '0' : '1'}-${index}.mp4`;
+        let vidSrc = `content/quiz-media/type6/vid/${questionId}-${side === 'left' ? '0' : '1'}-${index}.mp4`;
         contentEl.setAttribute("src", vidSrc);
         contentEl.classList.add('video-content');
         contentIsNeedLoupe = true
@@ -1701,14 +1701,14 @@ function createContentElement_Type7(content, position, index, questionId) {
         }
     } else if (content.type === 'image') {
         contentEl = document.createElement("img");
-        let imgSrc = `content/quiz-images/type7/img/${questionId}-${position === 'top' ? '0' : '1'}-${index}.png`;
+        let imgSrc = `content/quiz-media/type7/img/${questionId}-${position === 'top' ? '0' : '1'}-${index}.png`;
         contentEl.setAttribute("src", imgSrc);
         contentEl.setAttribute("alt", "image content");
         contentEl.classList.add('image-content', 'type7-image');
         contentIsNeedLoupe = true;
     } else if (content.type === 'video') {
         contentEl = document.createElement("video");
-        let vidSrc = `content/quiz-images/type7/vid/${questionId}-${position === 'top' ? '0' : '1'}-${index}.mp4`;
+        let vidSrc = `content/quiz-media/type7/vid/${questionId}-${position === 'top' ? '0' : '1'}-${index}.mp4`;
         contentEl.setAttribute("src", vidSrc);
         contentEl.classList.add('video-content', 'type7-video');
         contentIsNeedLoupe = true;
