@@ -222,10 +222,11 @@ body{
 }
 
 .question_type_0_answers{
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
+    align-items: center;
 }
 
 .question_type_0_answers > div{
@@ -237,7 +238,8 @@ body{
     height: 4vw;
     margin-top: 1vh;
     margin-bottom: 1vh;
-     background-color: var(--bg-color); 
+    background-color: var(--bg-color); 
+    min-width: 500px;
     /* background-color: lightgreen; */
     /* background-color: lightcoral; */
 }
@@ -453,42 +455,8 @@ input[type='checkbox']:checked {
     
 }
 
-.question_type_2_content{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    padding: 2vw;
-    align-items: center;
-}
-
-.question_type_2_img, .question_type_2_vid{
-    display: flex;
-    justify-content: center;
-    align-self: center;
-    overflow: hidden;
-    position: relative;
-    width: 40%;
-}
-
-.question_type_2_img img, .question_type_2_vid video{
-    border-radius: 1vh;
-    margin-right: 1.5vw;
-    margin-left: 1.5vw;
-    width: 80%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.question_type_2_answers{
-    width: 50%;
-    height: 100%;
-    margin-left: 2vw;
-}
-
 .place_of_custom_dropdown > div{
     margin-right: .6vw;
-    margin-top: .6vw;
 }
 
 .question_type_2_dropdown{
@@ -750,10 +718,10 @@ input[type='checkbox']:checked {
     border-left: red 1px solid;
 }
 
-.question_type_5_dropdown_image{
+.question_type_5_dropdown_image {
     display: flex;
     justify-content: center;
-    height: 25vw;
+    /* height: 25vw; */
     margin-bottom: 3vh;
 }
 
@@ -792,20 +760,26 @@ input[type='checkbox']:checked {
     top: 20% !important;
 }
 
-.question_type_5_answers{
+.question_type_5_answers {
     display: flex;
     flex-direction: row;
-    align-content: space-between;
-    align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
-    width: 30%;
+    width: 70%;
     height: 100%;
 }
 
-.question_type_5_dropdown_block{
+.question_type_5_dropdown_block {
     display: flex;
-    
     width: 100%;
+    margin-bottom: 10px; /* Отступ между блоками */
+}
+
+.question_type_5_answers_left,
+.question_type_5_answers_right {
+    display: flex;
+    flex-direction: column;
+    width: 40%; /* Около половины родительской ширины с учётом отступов */
 }
 
 .custom-dropdown-image-select{

@@ -506,60 +506,42 @@ function createBodyPopUp_Type2(question){
     let elChB = document.createElement("form");
     elChB.setAttribute("style", "width: 100%;");
     let elChBChB = document.createElement("div");
-    elChBChB.setAttribute("class", "question_type_2_content");
+    elChBChB.setAttribute("class", "question_type_2_dropdown");
+    let elChBChBChB = document.createElement("div");
+    elChBChBChB.setAttribute("class", "question_type_2_answers");
+    elChBChBChB.setAttribute("id", "question_type_2_answers");
+    let elChBChBChBChB = document.createElement("div");
+    elChBChBChBChB.setAttribute("class", "place_of_custom_dropdown");
 
-    // Check and append image or video
-    if (question.image) elChBChB.appendChild(createImgDiv_Type2(question));
-
-    // Create the answers section
-    let answersDiv = document.createElement("div");
-    answersDiv.setAttribute("class", "question_type_2_answers");
-    answersDiv.setAttribute("id", "question_type_2_answers");
-
-    let answersContent = document.createElement("div");
-    answersContent.setAttribute("class", "place_of_custom_dropdown");
-
-    // Split text into placeholders and create corresponding elements
+    // Разбиваем текст по плейсхолдерам '|' и '!'
     let textAndPlaceholders = question.textDd.split(/(\||!)/);
 
-    let dropdownIndex = 0;
-    let placeholderIndex = 0;
+    let dropdownIndex = 0;    // Индекс для выпадающих списков в answers
+    let placeholderIndex = 0; // Общий индекс плейсхолдеров
 
     for (let i = 0; i < textAndPlaceholders.length; i++) {
         if (textAndPlaceholders[i] === '|' || textAndPlaceholders[i] === '!') {
             if (textAndPlaceholders[i] === '|') {
-                answersContent.appendChild(createDropdown_Type2(question, dropdownIndex, placeholderIndex));
+                // Передаем оба индекса
+                elChBChBChBChB.appendChild(createDropdown_Type2(question, dropdownIndex, placeholderIndex));
                 dropdownIndex++;
             } else if (textAndPlaceholders[i] === '!') {
-                answersContent.appendChild(createInputField_Type2(question, placeholderIndex));
+                // Передаем placeholderIndex
+                elChBChBChBChB.appendChild(createInputField_Type2(question, placeholderIndex));
             }
             placeholderIndex++;
         } else {
-            createDivsForText(textAndPlaceholders[i], answersContent);
+            // Это текст между плейсхолдерами
+            createDivsForText(textAndPlaceholders[i], elChBChBChBChB);
         }
     }
 
-    answersDiv.appendChild(answersContent);
-    elChBChB.appendChild(answersDiv);
-
+    elChBChBChB.appendChild(elChBChBChBChB);
+    elChBChB.appendChild(elChBChBChB);
     elChB.appendChild(elChBChB);
     el.appendChild(elChB);
 
     if (!questionIsPassed(question)) elChB.appendChild(createBottomPopUp(question));
-
-    return el;
-}
-function createImgDiv_Type2(question){ 
-    let id = allQuestions.indexOf(question);
-    let el = document.createElement("div");
-    el.setAttribute("class", "question_type_2_img");
-    el.setAttribute("id", "question_type_2_img");
-    
-    let img = document.createElement("img");
-    img.setAttribute("src", `${imgPath}/${id}.png`);
-    el.appendChild(img);
-
-    el.appendChild(createLoupe());
 
     return el;
 }
@@ -863,33 +845,30 @@ function createBodyPopUp_Type5(question){
     elChB.appendChild(createDropDownImage_Type5(question));
     if (!questionIsPassed(question)) elChB.appendChild(createBottomPopUp(question));
 
-
     return el;
 }
 function createDropDownImage_Type5(question){
     let el = document.createElement("div");
     el.setAttribute("class", "question_type_5_dropdown_image");
     let elChB = document.createElement("div");
-    
 
-    
     if (question.image) {
         elChB.setAttribute("class", "question_type_5_image");
         let elChBChB = document.createElement("img");
         elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.png`);
         elChBChB.setAttribute("alt", "");
         elChB.appendChild(elChBChB);
-        elChB.appendChild(createLoupe("resize_btn_type_5"))
-        el.appendChild(elChB)
-    }else if(question.video){
+        elChB.appendChild(createLoupe("resize_btn_type_5"));
+        el.appendChild(elChB);
+    } else if(question.video){
         elChB.setAttribute("class", "question_type_5_video");
         let elChBChB = document.createElement("video");
         elChBChB.controls = true;
         elChBChB.setAttribute("src", `${imgPath}/${allQuestions.indexOf(question)}.mp4`);
         elChBChB.setAttribute("alt", "");
         elChB.appendChild(elChBChB);
-        elChB.appendChild(createLoupe("resize_btn_type_5 resize_btn_type_5_video"))
-        el.appendChild(elChB)
+        elChB.appendChild(createLoupe("resize_btn_type_5 resize_btn_type_5_video"));
+        el.appendChild(elChB);
     }
 
     el.appendChild(createAnswers_Type5(question));
@@ -900,10 +879,35 @@ function createAnswers_Type5(question){
     let el = document.createElement("div");
     el.setAttribute("class", "question_type_5_answers");
 
-    for (let i = 0; i < question.answers.length; i++) {
-        el.appendChild(createDropdownBlock_Type5(question, i));
+    const totalAnswers = question.answers.length;
+
+    if (totalAnswers > 5) {
+        // Создаём две группы
+        let leftGroup = document.createElement("div");
+        leftGroup.setAttribute("class", "question_type_5_answers_left");
+
+        let rightGroup = document.createElement("div");
+        rightGroup.setAttribute("class", "question_type_5_answers_right");
+
+        // Добавляем первые 5 элементов в левую группу
+        for (let i = 0; i < Math.min(5, totalAnswers); i++) {
+            leftGroup.appendChild(createDropdownBlock_Type5(question, i));
+        }
+
+        // Добавляем остальные элементы в правую группу
+        for (let i = 5; i < totalAnswers; i++) {
+            rightGroup.appendChild(createDropdownBlock_Type5(question, i));
+        }
+
+        el.appendChild(leftGroup);
+        el.appendChild(rightGroup);
+    } else {
+        // Если элементов 5 или меньше, добавляем их напрямую
+        for (let i = 0; i < totalAnswers; i++) {
+            el.appendChild(createDropdownBlock_Type5(question, i));
+        }
     }
-    
+
     return el;
 }
 function createDropdownBlock_Type5(question, i){
@@ -925,17 +929,19 @@ function createDropdownBlock_Type5(question, i){
     let elChDChB = document.createElement("div");
     elChDChB.setAttribute("class", "custom-dropdown-input-placeholder");
     let elChDChBChA;
-    if (!passed) elChDChBChA = document.createTextNode("Выберите ответ");
-    else {
+    if (!passed) {
+        elChDChBChA = document.createTextNode("Выберите ответ");
+    } else {
         let text = `${question.answers[question.answered[i]]}`;
         elChDChBChA = document.createTextNode(text);
         if (question.correctAnswer[i] == question.answered[i]){
             elChD.style = "background-color: #bdffbd;";
-        }else elChD.style = "background-color: #ffb9b9;";
+        } else {
+            elChD.style = "background-color: #ffb9b9;";
+        }
     }
 
     elChDChB.appendChild(elChDChBChA);
-
     elChD.appendChild(elChDChB);
 
     let elChDChD = document.createElement("div");
@@ -944,7 +950,6 @@ function createDropdownBlock_Type5(question, i){
     elChDChDChA.setAttribute("src", "content/check-mark.png");
     elChDChDChA.setAttribute("alt", "");
     elChDChD.appendChild(elChDChDChA);
-    
     elChD.appendChild(elChDChD);
 
     let elChDChF = document.createElement("div");
@@ -953,10 +958,10 @@ function createDropdownBlock_Type5(question, i){
     for (let j = 0; j < question.answers.length; j++) {
         let elChDChFChB = document.createElement("div");
         let elChDChFChBChA = document.createTextNode(`${question.answers[j]}`);
-        
+
         if (!passed){
             elChDChFChB.addEventListener('mouseup', function(e){
-                text = e.target.innerHTML;
+                let text = e.target.innerHTML;
                 elChDChB.innerHTML = text;
                 elChD.classList.remove("un_answered");
             });
@@ -971,13 +976,13 @@ function createDropdownBlock_Type5(question, i){
             elChDChF.classList.toggle("closed");
         });
     }
-    
-    
+
     elChD.appendChild(elChDChF);
     el.appendChild(elChD);
 
     return el;
 }
+
 
 function createResult(){
 
